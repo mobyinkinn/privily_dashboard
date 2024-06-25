@@ -56,10 +56,7 @@
 
 // export default App;
 
-
-
- // src/App.js
-
+// src/App.js
 
 // import React, { useEffect, useState } from "react";
 // import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
@@ -131,8 +128,6 @@
 // }
 
 // export default App;
-
-
 
 // src/App.js
 
@@ -210,7 +205,6 @@
 // }
 
 // export default App;
-
 
 // // src/App.js
 // import React, { useEffect, useState } from "react";
@@ -294,8 +288,6 @@
 
 // export default App;
 
-
-
 // // src/App.js
 // import React, { useEffect, useState } from "react";
 // import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
@@ -377,9 +369,6 @@
 // }
 
 // export default App;
-
-
-
 
 // src/App.js
 
@@ -656,9 +645,6 @@
 
 // export default App;
 
-
-
-
 import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
@@ -717,21 +703,17 @@ const routes = [
 
 function App() {
   const { isAuthenticated, auth } = useAuth();
-    const getAuthorizedRoutes = () => {
-  const auth_page = localStorage.getItem("UserData");
-  console.log("auth_page", auth_page);
-      if (auth_page) {
-        return routes.filter((route) =>
-          auth_page.includes(route.id.toString())
-        );
-      } else {
-        return [];
-      }
-    };
-    
-    // const authorization_routes = getAuthorizedRoutes()
+  const getAuthorizedRoutes = () => {
+    const auth_page = auth?.auth_page;
+    if (auth_page) {
+      return routes.filter((route) => auth_page.includes(route.id.toString()));
+    } else {
+      return [];
+    }
+  };
 
-    
+  // const authorization_routes = getAuthorizedRoutes()
+
   return (
     <Router>
       <Routes>
