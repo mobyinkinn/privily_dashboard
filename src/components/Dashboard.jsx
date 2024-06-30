@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useAuth } from "../context/Authcontext";
+import axios from "axios";
 
 const DashboardContainer = styled.div`
   display: flex;
@@ -15,6 +17,26 @@ const Widget = styled.div`
 `;
 
 const Dashboard = () => {
+  const [data, setData] = useState({});
+  const { auth } = useAuth();
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/dashboard/${auth?.user?._id || ""}`
+      );
+      const data = response.data;
+      setData(data);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  console.log(data, "this is data");
+
   return (
     <DashboardContainer>
       <Widget>Widget 1</Widget>
