@@ -1,4 +1,3 @@
-
 // import React, { useEffect, useState } from "react";
 // import {
 //   Table,
@@ -211,7 +210,6 @@
 
 // export default UserDetails;
 
-
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -233,6 +231,8 @@ import axios from "axios";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import AddIcon from "@mui/icons-material/Add";
 import { CSVLink } from "react-csv";
+import { useAuth } from "../context/Authcontext";
+import NoAccess from "./NoAccess.jsx";
 
 const UserDetails = () => {
   const [podsData, setPodsData] = useState([]);
@@ -240,9 +240,18 @@ const UserDetails = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
+  const [userVerified, setUserVerified] = useState(false);
+  const { verifyUser } = useAuth();
 
   useEffect(() => {
-    fetchPodsData();
+    const effect = async () => {
+      let res = await verifyUser(5);
+      setUserVerified(res);
+      if (res) {
+        fetchPodsData();
+      }
+    };
+    effect();
   }, []);
 
   const fetchPodsData = async () => {
@@ -332,152 +341,156 @@ const UserDetails = () => {
     data: podsData,
   };
 
-  return (
-    <>
-      <Typography
-        variant="h5"
-        fontWeight={"bold"}
-        sx={{ marginBottom: 2, color: "#ED3327" }}
-      >
-        Users
-      </Typography>
-      <Stack justifyContent={"space-between"} direction={"row"}>
-        <Stack direction={"row"}>
-          <Button
-            variant="contained"
+  if (!userVerified) {
+    return <NoAccess />;
+  } else {
+    return (
+      <>
+        <Typography
+          variant="h5"
+          fontWeight={"bold"}
+          sx={{ marginBottom: 2, color: "#ED3327" }}
+        >
+          Users
+        </Typography>
+        <Stack justifyContent={"space-between"} direction={"row"}>
+          <Stack direction={"row"}>
+            <Button
+              variant="contained"
+              sx={{
+                marginRight: 2,
+                backgroundColor: "#ED3327",
+                borderRadius: "20px",
+                "&:hover": {
+                  bgcolor: "#ED3327",
+                },
+              }}
+            >
+              All Pods ({podsData.length})
+            </Button>
+            <Button variant="outlined" startIcon={<AddIcon />}>
+              Add Pods
+            </Button>
+          </Stack>
+          <Stack direction={"row"} spacing={2}>
+            <CSVLink {...csvReport} style={{ textDecoration: "none" }}>
+              <Button variant="outlined" startIcon={<GetAppIcon />}>
+                Download All
+              </Button>
+            </CSVLink>
+          </Stack>
+        </Stack>
+        <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>User Id</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>Full Name</TableCell>
+                <TableCell>Mobile</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Operations</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {podsData.map((pod) => (
+                <TableRow key={pod._id}>
+                  <TableCell>{pod._id}</TableCell>
+                  <TableCell>{pod.email || "N/A"}</TableCell>
+                  <TableCell>{pod.role || "N/A"}</TableCell>
+                  <TableCell>{`${pod.firstname} ${pod.lastname}`}</TableCell>
+                  <TableCell>{pod.mobile || "N/A"}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color={pod.isBlocked === false ? "success" : "error"}
+                      sx={{ borderRadius: "20px" }}
+                    >
+                      {pod.isBlocked === false ? "active" : "Inactive"}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={() =>
+                        handleBlockUnblockUser(pod._id, pod.isBlocked)
+                      }
+                    >
+                      {pod.isBlocked === false ? (
+                        <Visibility />
+                      ) : (
+                        <VisibilityOff />
+                      )}
+                    </IconButton>
+                    <IconButton onClick={() => handleConfirmDelete(pod._id)}>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Modal
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          aria-labelledby="modal-title"
+          aria-describedby="modal-description"
+        >
+          <Box
             sx={{
-              marginRight: 2,
-              backgroundColor: "#ED3327",
-              borderRadius: "20px",
-              "&:hover": {
-                bgcolor: "#ED3327",
-              },
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
             }}
           >
-            All Pods ({podsData.length})
-          </Button>
-          <Button variant="outlined" startIcon={<AddIcon />}>
-            Add Pods
-          </Button>
-        </Stack>
-        <Stack direction={"row"} spacing={2}>
-          <CSVLink {...csvReport} style={{ textDecoration: "none" }}>
-            <Button variant="outlined" startIcon={<GetAppIcon />}>
-              Download All
+            <Typography id="modal-title" variant="h6" component="h2">
+              {modalMessage}
+            </Typography>
+            <Button onClick={() => setModalOpen(false)} sx={{ mt: 2 }}>
+              Close
             </Button>
-          </CSVLink>
-        </Stack>
-      </Stack>
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>User Id</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Full Name</TableCell>
-              <TableCell>Mobile</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Operations</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {podsData.map((pod) => (
-              <TableRow key={pod._id}>
-                <TableCell>{pod._id}</TableCell>
-                <TableCell>{pod.email || "N/A"}</TableCell>
-                <TableCell>{pod.role || "N/A"}</TableCell>
-                <TableCell>{`${pod.firstname} ${pod.lastname}`}</TableCell>
-                <TableCell>{pod.mobile || "N/A"}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color={pod.isBlocked === false ? "success" : "error"}
-                    sx={{ borderRadius: "20px" }}
-                  >
-                    {pod.isBlocked === false ? "active" : "Inactive"}
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    onClick={() =>
-                      handleBlockUnblockUser(pod._id, pod.isBlocked)
-                    }
-                  >
-                    {pod.isBlocked === false ? (
-                      <Visibility />
-                    ) : (
-                      <VisibilityOff />
-                    )}
-                  </IconButton>
-                  <IconButton onClick={() => handleConfirmDelete(pod._id)}>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Modal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-          }}
+          </Box>
+        </Modal>
+        <Modal
+          open={confirmModalOpen}
+          onClose={() => setConfirmModalOpen(false)}
+          aria-labelledby="confirm-modal-title"
+          aria-describedby="confirm-modal-description"
         >
-          <Typography id="modal-title" variant="h6" component="h2">
-            {modalMessage}
-          </Typography>
-          <Button onClick={() => setModalOpen(false)} sx={{ mt: 2 }}>
-            Close
-          </Button>
-        </Box>
-      </Modal>
-      <Modal
-        open={confirmModalOpen}
-        onClose={() => setConfirmModalOpen(false)}
-        aria-labelledby="confirm-modal-title"
-        aria-describedby="confirm-modal-description"
-      >
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            border: "2px solid #000",
-            boxShadow: 24,
-            p: 4,
-          }}
-        >
-          <Typography id="confirm-modal-title" variant="h6" component="h2">
-            Are you sure you want to delete this user?
-          </Typography>
-          <Button onClick={confirmDelete} sx={{ mt: 2, mr: 2 }}>
-            Yes
-          </Button>
-          <Button onClick={() => setConfirmModalOpen(false)} sx={{ mt: 2 }}>
-            No
-          </Button>
-        </Box>
-      </Modal>
-    </>
-  );
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 400,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <Typography id="confirm-modal-title" variant="h6" component="h2">
+              Are you sure you want to delete this user?
+            </Typography>
+            <Button onClick={confirmDelete} sx={{ mt: 2, mr: 2 }}>
+              Yes
+            </Button>
+            <Button onClick={() => setConfirmModalOpen(false)} sx={{ mt: 2 }}>
+              No
+            </Button>
+          </Box>
+        </Modal>
+      </>
+    );
+  }
 };
 
 export default UserDetails;

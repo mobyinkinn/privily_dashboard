@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../context/Authcontext";
+import NoAccess from "./NoAccess.jsx";
 
 const VipBookingPods = () => {
-  return (
-    <div>VipBookingPods</div>
-  )
-}
+  const [userVerified, setUserVerified] = useState(false);
+  const { verifyUser } = useAuth();
 
-export default VipBookingPods
+  useEffect(() => {
+    const effect = async () => {
+      let res = await verifyUser(4);
+      setUserVerified(res);
+    };
+    effect();
+  }, []);
+
+  if (!userVerified) {
+    return <NoAccess />;
+  } else {
+    return <div>VipBookingPods</div>;
+  }
+};
+
+export default VipBookingPods;

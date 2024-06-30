@@ -45,8 +45,6 @@
 
 // export const useAuth = () => useContext(AuthContext);
 
-
-
 // src/context/AuthContext.js
 
 // import React, { createContext, useContext, useState } from "react";
@@ -95,9 +93,6 @@
 
 // export const useAuth = () => useContext(AuthContext);
 
-
-
-
 // // src/context/AuthContext.js
 // import React, { createContext, useContext, useState } from "react";
 // import axios from "axios";
@@ -143,8 +138,6 @@
 
 // export const useAuth = () => useContext(AuthContext);
 
-
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
@@ -154,23 +147,29 @@ export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(null);
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const authData = JSON.parse(localStorage.getItem("UserData"));
+    const authData = JSON.parse(localStorage.getItem("AuthPages"));
+    const userData = JSON.parse(localStorage.getItem("UserData"));
+
     if (token && authData) {
-      setAuth({ token, auth_page: authData });
+      setAuth({ token, auth_page: authData, user: userData });
     }
   }, []);
   const login = async (email, password) => {
     try {
-      const response = await axios.post("http://localhost:4000/api/user/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:4000/api/user/login",
+        {
+          email,
+          password,
+        }
+      );
 
       if (response.status === 200) {
         const data = response.data;
         setAuth(data); // Set the authenticated user data
         localStorage.setItem("token", data.token); // Store token in localStorage for persistent login
-        localStorage.setItem("UserData", JSON.stringify(data.auth_page)); // Store token in localStorage for persistent login
+        localStorage.setItem("AuthPages", JSON.stringify(data.auth_page)); // Store token in localStorage for persistent login
+        localStorage.setItem("UserData", JSON.stringify(data)); // Store token in localStorage for persistent login
       } else {
         throw new Error(response.data.message || "Login failed");
       }
@@ -180,16 +179,38 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const verifyUser = async (auth_page) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/user/verify-page",
+        { id: auth?.user?._id, auth_page },
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
+          },
+        }
+      );
+      return response?.data?.success;
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+      return false;
+    }
+  };
+
   const logout = () => {
     setAuth(null);
     localStorage.removeItem("token");
+    localStorage.removeItem("AuthPages");
     localStorage.removeItem("UserData");
   };
 
   const isAuthenticated = () => !!auth;
 
   return (
-    <AuthContext.Provider value={{ login, logout, isAuthenticated, auth }}>
+    <AuthContext.Provider
+      value={{ login, logout, isAuthenticated, auth, verifyUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

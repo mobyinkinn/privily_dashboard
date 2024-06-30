@@ -108,7 +108,6 @@
 
 // export default YourComponent;
 
-
 // import React from 'react'
 // import {
 //   Table,
@@ -236,7 +235,6 @@
 // }
 
 // export default Booking
-
 
 // import React, { useEffect, useState } from "react";
 // import {
@@ -381,9 +379,6 @@
 
 // export default Booking;
 
-
-
-
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -403,31 +398,40 @@ import axios from "axios";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import AddIcon from "@mui/icons-material/Add";
 import { CSVLink } from "react-csv";
+import { useAuth } from "../context/Authcontext";
+import NoAccess from "./NoAccess.jsx";
 
 const Booking = () => {
   const [podsData, setPodsData] = useState([]);
+  const [userVerified, setUserVerified] = useState(false);
+  const { verifyUser } = useAuth();
 
+  const fetchPodsData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:4000/api/user/all-bookings",
+        {
+          headers: {
+            Authorization:
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODQ0OTg4OSwiZXhwIjoxNzI3MDg5ODg5fQ.xbalw4Td__E_lEMO0xuCFn_Vw5mJLoOMr5PASMEOt78",
+          },
+        }
+      );
+      setPodsData(response.data);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
+  };
   useEffect(() => {
-    const fetchPodsData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:4000/api/user/all-bookings",
-          {
-            headers: {
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODQ0OTg4OSwiZXhwIjoxNzI3MDg5ODg5fQ.xbalw4Td__E_lEMO0xuCFn_Vw5mJLoOMr5PASMEOt78",
-            },
-          }
-        );
-        setPodsData(response.data);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
+    const effect = async () => {
+      let res = await verifyUser(6);
+      setUserVerified(res);
+      if (res) {
+        fetchPodsData();
       }
     };
-
-    fetchPodsData();
+    effect();
   }, []);
-
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "2-digit", day: "2-digit" };
     const date = new Date(dateString);
@@ -455,98 +459,102 @@ const Booking = () => {
     data: podsData,
   };
 
-  return (
-    <>
-      <Typography
-        variant="h5"
-        fontWeight={"bold"}
-        sx={{ marginBottom: 2, color: "#ED3327" }}
-      >
-        Bookings
-      </Typography>
-      <Stack justifyContent={"space-between"} direction={"row"}>
-        <Stack direction={"row"}>
-          <Button
-            variant="contained"
-            sx={{
-              marginRight: 2,
-              backgroundColor: "#ED3327",
-              borderRadius: "20px",
-              "&:hover": {
-                bgcolor: "#ED3327",
-              },
-            }}
-          >
-            All Pods ({podsData.length})
-          </Button>
-          <Button variant="outlined" startIcon={<AddIcon />}>
-            Add Pods
-          </Button>
-        </Stack>
-        <Stack direction={"row"} spacing={2}>
-          <CSVLink {...csvReport} style={{ textDecoration: "none" }}>
-            <Button variant="outlined" startIcon={<GetAppIcon />}>
-              Downlaod All
+  if (!userVerified) {
+    return <NoAccess />;
+  } else {
+    return (
+      <>
+        <Typography
+          variant="h5"
+          fontWeight={"bold"}
+          sx={{ marginBottom: 2, color: "#ED3327" }}
+        >
+          Bookings
+        </Typography>
+        <Stack justifyContent={"space-between"} direction={"row"}>
+          <Stack direction={"row"}>
+            <Button
+              variant="contained"
+              sx={{
+                marginRight: 2,
+                backgroundColor: "#ED3327",
+                borderRadius: "20px",
+                "&:hover": {
+                  bgcolor: "#ED3327",
+                },
+              }}
+            >
+              All Pods ({podsData.length})
             </Button>
-          </CSVLink>
+            <Button variant="outlined" startIcon={<AddIcon />}>
+              Add Pods
+            </Button>
+          </Stack>
+          <Stack direction={"row"} spacing={2}>
+            <CSVLink {...csvReport} style={{ textDecoration: "none" }}>
+              <Button variant="outlined" startIcon={<GetAppIcon />}>
+                Downlaod All
+              </Button>
+            </CSVLink>
+          </Stack>
         </Stack>
-      </Stack>
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Booking Id</TableCell>
-              <TableCell>Booking Date</TableCell>
-              <TableCell>Booking Purpose</TableCell>
-              <TableCell>Booking Time</TableCell>
-              <TableCell>Operation</TableCell>
-              <TableCell>Status</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {podsData.map((pod) => (
-              <TableRow key={pod._id}>
-                <TableCell>{pod.podId}</TableCell>
-                <TableCell>{formatDate(pod.bookingDate)}</TableCell>
-                <TableCell>{pod.bookingPurpose || "N/A"}</TableCell>
-                <TableCell>{`${formatTime(pod.startTime)} - ${formatTime(
-                  pod.endTime
-                )}`}</TableCell>
-                <TableCell>
-                  <IconButton>
-                    <Visibility />
-                  </IconButton>
-                  {/* <IconButton>
+        <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Booking Id</TableCell>
+                <TableCell>Booking Date</TableCell>
+                <TableCell>Booking Purpose</TableCell>
+                <TableCell>Booking Time</TableCell>
+                <TableCell>Operation</TableCell>
+                <TableCell>Status</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {podsData.map((pod) => (
+                <TableRow key={pod._id}>
+                  <TableCell>{pod.podId}</TableCell>
+                  <TableCell>{formatDate(pod.bookingDate)}</TableCell>
+                  <TableCell>{pod.bookingPurpose || "N/A"}</TableCell>
+                  <TableCell>{`${formatTime(pod.startTime)} - ${formatTime(
+                    pod.endTime
+                  )}`}</TableCell>
+                  <TableCell>
+                    <IconButton>
+                      <Visibility />
+                    </IconButton>
+                    {/* <IconButton>
                     <Download />
                   </IconButton> */}
-                  <IconButton>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color={
-                      pod.status === "Completed"
-                        ? "success"
-                        : pod.status === "Pending"
-                        ? "primary"
-                        : pod.status === "Processing"
-                        ? "warning"
-                        : "error"
-                    }
-                    sx={{ borderRadius: "20px" }}
-                  >
-                    {pod.status}
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </>
-  );
+                    <IconButton>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color={
+                        pod.status === "Completed"
+                          ? "success"
+                          : pod.status === "Pending"
+                          ? "primary"
+                          : pod.status === "Processing"
+                          ? "warning"
+                          : "error"
+                      }
+                      sx={{ borderRadius: "20px" }}
+                    >
+                      {pod.status}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </>
+    );
+  }
 };
 
 export default Booking;

@@ -1,4 +1,3 @@
-
 // import React, { useEffect, useState } from "react";
 // import {
 //   Table,
@@ -355,7 +354,6 @@
 // };
 
 // export default Pods;
-
 
 // import React, { useEffect, useState } from "react";
 // import {
@@ -770,8 +768,6 @@
 // };
 
 // export default Pods;
-
-
 
 // import React, { useEffect, useState } from "react";
 // import {
@@ -1269,9 +1265,6 @@
 // };
 
 // export default Pods;
-
-
-
 
 // import React, { useEffect, useState } from "react";
 // import {
@@ -1808,8 +1801,6 @@
 
 // export default Pods;
 
-
-
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -1836,6 +1827,8 @@ import {
 import { Visibility, Download, Delete } from "@mui/icons-material";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import AddIcon from "@mui/icons-material/Add";
+import { useAuth } from "../context/Authcontext";
+import NoAccess from "./NoAccess.jsx";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 const Pods = () => {
@@ -1847,6 +1840,7 @@ const Pods = () => {
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedFeatures, setSelectedFeatures] = useState([]);
   const [images, setImages] = useState([]);
+  const [userVerified, setUserVerified] = useState(false);
   const [imageUrls, setImageUrls] = useState([]);
   const [alertOpen, setAlertOpen] = useState(false);
 
@@ -1959,6 +1953,7 @@ const Pods = () => {
     setImages([]);
     setImageUrls([]);
   };
+  const { verifyUser } = useAuth();
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -2039,128 +2034,137 @@ const Pods = () => {
       setError("Error creating pod");
     }
   };
-
   useEffect(() => {
-    fetchPodsData();
+    const effect = async () => {
+      let res = await verifyUser(3);
+      setUserVerified(res);
+      if (res) {
+        fetchPodsData();
+      }
+    };
+    effect();
   }, []);
 
-  return (
-    <Box sx={{ padding: "43px 5px" }}>
-      <Typography
-        variant="h5"
-        fontWeight={"bold"}
-        sx={{ marginBottom: 2, color: "#ED3327" }}
-      >
-        Pods
-      </Typography>
-      <Stack justifyContent={"space-between"} direction={"row"}>
-        <Stack direction={"row"}>
-          <Button
-            variant="contained"
-            sx={{
-              marginRight: 2,
-              backgroundColor: "#ED3327",
-              borderRadius: "20px",
-              "&:hover": {
-                bgcolor: "#ED3327",
-              },
-            }}
-          >
-            All Pods ({podsData.length})
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<AddIcon />}
-            onClick={handleOpen}
-          >
-            Create Pods
+  if (!userVerified) {
+    return <NoAccess />;
+  } else {
+    return (
+      <Box sx={{ padding: "43px 5px" }}>
+        <Typography
+          variant="h5"
+          fontWeight={"bold"}
+          sx={{ marginBottom: 2, color: "#ED3327" }}
+        >
+          Pods
+        </Typography>
+        <Stack justifyContent={"space-between"} direction={"row"}>
+          <Stack direction={"row"}>
+            <Button
+              variant="contained"
+              sx={{
+                marginRight: 2,
+                backgroundColor: "#ED3327",
+                borderRadius: "20px",
+                "&:hover": {
+                  bgcolor: "#ED3327",
+                },
+              }}
+            >
+              All Pods ({podsData.length})
+            </Button>
+            <Button
+              variant="outlined"
+              startIcon={<AddIcon />}
+              onClick={handleOpen}
+            >
+              Create Pods
+            </Button>
+          </Stack>
+          <Button variant="outlined" startIcon={<GetAppIcon />}>
+            All Downloads
           </Button>
         </Stack>
-        <Button variant="outlined" startIcon={<GetAppIcon />}>
-          All Downloads
-        </Button>
-      </Stack>
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Image</TableCell>
-              <TableCell>Pod Id</TableCell>
-              <TableCell>Title</TableCell>
-              <TableCell>Location</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Opeartions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {podsData.map((pod) => (
-              <TableRow key={pod.id}>
-                <TableCell>
-                  {pod.images && pod.images.length > 0 && (
-                    <img
-                      key={pod.images[0]._id}
-                      src={`http://localhost:4000${pod.images[0].url}`}
-                      alt=""
-                      style={{ width: "50px", height: "50px" }}
-                    />
-                  )}
-                </TableCell>
-                <TableCell>{pod._id}</TableCell>
-                <TableCell>{pod.title}</TableCell>
-                <TableCell>
-                  {`${pod.location.city}, ${pod.location.state}`}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color={pod.isAvailable ? "success" : "error"}
-                    sx={{ borderRadius: "20px" }}
-                  >
-                    {pod.isAvailable ? "Active" : "Inactive"}
-                  </Button>
-                </TableCell>
-                <TableCell>
-                  <IconButton>
-                    <Visibility />
-                  </IconButton>
-                  <IconButton>
-                    <Download />
-                  </IconButton>
-                  <IconButton>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
+        <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Image</TableCell>
+                <TableCell>Pod Id</TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Location</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Opeartions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "40%",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            borderRadius: 5,
-            p: 4,
-          }}
-        >
-          <Stack p={"0 16px 16px 16px"}>
-            <Typography
-              fontWeight={"bold"}
-              fontSize={"30px"}
-              textAlign={"center"}
-            >
-              Create Pod
-            </Typography>
-            {/* <CloseIcon onClick={handleClose} /> */}
-            {/* <Button
+            </TableHead>
+            <TableBody>
+              {podsData.map((pod) => (
+                <TableRow key={pod.id}>
+                  <TableCell>
+                    {pod.images && pod.images.length > 0 && (
+                      <img
+                        key={pod.images[0]._id}
+                        src={`http://localhost:4000${pod.images[0].url}`}
+                        alt=""
+                        style={{ width: "50px", height: "50px" }}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell>{pod._id}</TableCell>
+                  <TableCell>{pod.title}</TableCell>
+                  <TableCell>
+                    {`${pod.location.city}, ${pod.location.state}`}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color={pod.isAvailable ? "success" : "error"}
+                      sx={{ borderRadius: "20px" }}
+                    >
+                      {pod.isAvailable ? "Active" : "Inactive"}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <IconButton>
+                      <Visibility />
+                    </IconButton>
+                    <IconButton>
+                      <Download />
+                    </IconButton>
+                    <IconButton>
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Modal open={open} onClose={handleClose}>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "40%",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              borderRadius: 5,
+              p: 4,
+            }}
+          >
+            <Stack p={"0 16px 16px 16px"}>
+              <Typography
+                fontWeight={"bold"}
+                fontSize={"30px"}
+                textAlign={"center"}
+              >
+                Create Pod
+              </Typography>
+              {/* <CloseIcon onClick={handleClose} /> */}
+              {/* <Button
               onClick={handleClose}
               sx={{
                 width: "20%",
@@ -2170,164 +2174,165 @@ const Pods = () => {
             >
               Cancel
             </Button> */}
-          </Stack>
-          <Stack spacing={2}>
-            <Stack direction={"row"} gap={2}>
-              <TextField
-                margin="normal"
-                required
-                style={{ width: "50%" }}
-                label="User Id"
-                name="UserId"
-                value={formData.UserId}
-                onChange={handleInputChange}
-              />
-              <TextField
-                margin="normal"
-                required
-                style={{ width: "50%" }}
-                label="Device ID"
-                name="deviceId"
-                value={formData.deviceId}
-                onChange={handleInputChange}
-              />
             </Stack>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              label="Title"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              label="Description"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-            />
-            <Stack direction={"row"} gap={2}>
-              <Select
-                style={{ width: "50%" }}
-                value={selectedLocation}
-                onChange={handleLocationChange}
-                displayEmpty
-                renderValue={(selected) => {
-                  if (!selected) {
-                    return <em>Select Location</em>;
-                  }
-                  const location = locations.find(
-                    (location) => location._id === selected
-                  );
-                  return `${location.name}, ${location.city}, ${location.state}, ${location.zip}`;
-                }}
-              >
-                <MenuItem disabled value="">
-                  <em>Select Location</em>
-                </MenuItem>
-                {locations.map((location) => (
-                  <MenuItem key={location._id} value={location._id}>
-                    {`${location.name}, ${location.city}, ${location.state}, ${location.zip}`}
+            <Stack spacing={2}>
+              <Stack direction={"row"} gap={2}>
+                <TextField
+                  margin="normal"
+                  required
+                  style={{ width: "50%" }}
+                  label="User Id"
+                  name="UserId"
+                  value={formData.UserId}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  style={{ width: "50%" }}
+                  label="Device ID"
+                  name="deviceId"
+                  value={formData.deviceId}
+                  onChange={handleInputChange}
+                />
+              </Stack>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                label="Title"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                label="Description"
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+              />
+              <Stack direction={"row"} gap={2}>
+                <Select
+                  style={{ width: "50%" }}
+                  value={selectedLocation}
+                  onChange={handleLocationChange}
+                  displayEmpty
+                  renderValue={(selected) => {
+                    if (!selected) {
+                      return <em>Select Location</em>;
+                    }
+                    const location = locations.find(
+                      (location) => location._id === selected
+                    );
+                    return `${location.name}, ${location.city}, ${location.state}, ${location.zip}`;
+                  }}
+                >
+                  <MenuItem disabled value="">
+                    <em>Select Location</em>
                   </MenuItem>
-                ))}
-              </Select>
-              <Select
-                multiple
-                style={{ width: "50%" }}
-                value={selectedFeatures}
-                onChange={handleFeatureChange}
-                displayEmpty
-                renderValue={(selected) => {
-                  if (selected.length === 0) {
-                    return <em>Select Features</em>;
-                  }
-                  return selected
-                    .map(
-                      (id) =>
-                        features.find((feature) => feature._id === id)?.name
-                    )
-                    .join(", ");
-                }}
-              >
-                <MenuItem disabled value="">
-                  <em>Select Features</em>
-                </MenuItem>
-                {features.map((feature) => (
-                  <MenuItem key={feature._id} value={feature._id}>
-                    <Checkbox
-                      checked={selectedFeatures.indexOf(feature._id) > -1}
-                    />
-                    <ListItemText primary={feature.name} />
+                  {locations.map((location) => (
+                    <MenuItem key={location._id} value={location._id}>
+                      {`${location.name}, ${location.city}, ${location.state}, ${location.zip}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <Select
+                  multiple
+                  style={{ width: "50%" }}
+                  value={selectedFeatures}
+                  onChange={handleFeatureChange}
+                  displayEmpty
+                  renderValue={(selected) => {
+                    if (selected.length === 0) {
+                      return <em>Select Features</em>;
+                    }
+                    return selected
+                      .map(
+                        (id) =>
+                          features.find((feature) => feature._id === id)?.name
+                      )
+                      .join(", ");
+                  }}
+                >
+                  <MenuItem disabled value="">
+                    <em>Select Features</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </Stack>
-            <input type="file" multiple onChange={handleImageChange} />
-            <Stack direction={"row"} gap={2}>
+                  {features.map((feature) => (
+                    <MenuItem key={feature._id} value={feature._id}>
+                      <Checkbox
+                        checked={selectedFeatures.indexOf(feature._id) > -1}
+                      />
+                      <ListItemText primary={feature.name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Stack>
+              <input type="file" multiple onChange={handleImageChange} />
+              <Stack direction={"row"} gap={2}>
+                <TextField
+                  margin="normal"
+                  required
+                  style={{ width: "50%" }}
+                  label="Booking Requirements"
+                  name="booking_requirements"
+                  value={formData.booking_requirements}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  style={{ width: "50%" }}
+                  label="Availability"
+                  name="availability"
+                  value={formData.availability}
+                  onChange={handleInputChange}
+                />
+              </Stack>
               <TextField
                 margin="normal"
                 required
-                style={{ width: "50%" }}
-                label="Booking Requirements"
-                name="booking_requirements"
-                value={formData.booking_requirements}
+                fullWidth
+                label="Cancellation Policy"
+                name="cancellation_policy"
+                value={formData.cancellation_policy}
                 onChange={handleInputChange}
               />
-              <TextField
-                margin="normal"
-                required
-                style={{ width: "50%" }}
-                label="Availability"
-                name="availability"
-                value={formData.availability}
-                onChange={handleInputChange}
-              />
-            </Stack>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              label="Cancellation Policy"
-              name="cancellation_policy"
-              value={formData.cancellation_policy}
-              onChange={handleInputChange}
-            />
-            <Box
-              sx={{ mt: 2 }}
-              display={"flex"}
-              width={"100%"}
-              justifyContent={"center"}
-            >
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{
-                  width: "20%",
-                  backgroundColor: "#ED3327",
-                  "&:hover": { bgcolor: "#ED3327" },
-                }}
+              <Box
+                sx={{ mt: 2 }}
+                display={"flex"}
+                width={"100%"}
+                justifyContent={"center"}
               >
-                Submit
-              </Button>
-            </Box>
-          </Stack>
-        </Box>
-      </Modal>
-      <Snackbar
-        open={alertOpen}
-        autoHideDuration={6000}
-        onClose={() => setAlertOpen(false)}
-      >
-        <Alert onClose={() => setAlertOpen(false)} severity="success">
-          Pod created successfully!
-        </Alert>
-      </Snackbar>
-    </Box>
-  );
+                <Button
+                  type="submit"
+                  variant="contained"
+                  sx={{
+                    width: "20%",
+                    backgroundColor: "#ED3327",
+                    "&:hover": { bgcolor: "#ED3327" },
+                  }}
+                >
+                  Submit
+                </Button>
+              </Box>
+            </Stack>
+          </Box>
+        </Modal>
+        <Snackbar
+          open={alertOpen}
+          autoHideDuration={6000}
+          onClose={() => setAlertOpen(false)}
+        >
+          <Alert onClose={() => setAlertOpen(false)} severity="success">
+            Pod created successfully!
+          </Alert>
+        </Snackbar>
+      </Box>
+    );
+  }
 };
 
 export default Pods;

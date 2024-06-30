@@ -8,7 +8,6 @@
 
 // export default Features
 
-
 import React, { useEffect, useState } from "react";
 import {
   Button,
@@ -24,11 +23,16 @@ import {
 import axios from "axios";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
+import { useAuth } from "../context/Authcontext";
+import NoAccess from "./NoAccess.jsx";
+
 const Features = () => {
   const [features, setFeatures] = useState([]);
   const [open, setOpen] = useState(false);
   const [newFeatureName, setNewFeatureName] = useState("");
   const [error, setError] = useState("");
+  const [userVerified, setUserVerified] = useState(false);
+  const { verifyUser } = useAuth();
 
   // Fetch features from the API
   const fetchFeatures = async () => {
@@ -49,7 +53,14 @@ const Features = () => {
   };
 
   useEffect(() => {
-    fetchFeatures();
+    const effect = async () => {
+      let res = await verifyUser(2);
+      setUserVerified(res);
+      if (res) {
+        fetchFeatures();
+      }
+    };
+    effect();
   }, []);
 
   // Handle input change for new feature
@@ -90,83 +101,87 @@ const Features = () => {
     setError("");
   };
 
-  return (
-    <div>
-      <Typography
-        variant="h5"
-        fontWeight={"bold"}
-        sx={{ marginBottom: 2, color: "#ED3327" }}
-      >
-        Features
-      </Typography>
-      <List>
-        {features.map((feature) => (
-          <ListItem key={feature._id}>
-            <ListItemText primary={feature.name} />
-          </ListItem>
-        ))}
-      </List>
-      <Button variant="outlined" startIcon={<AddIcon />} onClick={handleOpen}>
-        Create Feature
-      </Button>
-      <Modal open={open} onClose={handleClose}>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "30%",
-            bgcolor: "background.paper",
-            boxShadow: 24,
-            borderRadius: 5,
-            p: 4,
-          }}
+  if (!userVerified) {
+    return <NoAccess />;
+  } else {
+    return (
+      <div>
+        <Typography
+          variant="h5"
+          fontWeight={"bold"}
+          sx={{ marginBottom: 2, color: "#ED3327" }}
         >
-          <Stack
-            direction={"row"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Typography variant="h6" component="h2">
-              Create New Feature
-            </Typography>
-            <CloseIcon onClick={handleClose} sx={{ cursor: "pointer" }} />
-          </Stack>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Feature Name"
-            name="name"
-            value={newFeatureName}
-            onChange={handleInputChange}
-          />
-          {error && <Typography color="error">{error}</Typography>}
+          Features
+        </Typography>
+        <List>
+          {features.map((feature) => (
+            <ListItem key={feature._id}>
+              <ListItemText primary={feature.name} />
+            </ListItem>
+          ))}
+        </List>
+        <Button variant="outlined" startIcon={<AddIcon />} onClick={handleOpen}>
+          Create Feature
+        </Button>
+        <Modal open={open} onClose={handleClose}>
           <Box
-            sx={{ mt: 2 }}
-            display={"flex"}
-            width={"100%"}
-            justifyContent={"center"}
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "30%",
+              bgcolor: "background.paper",
+              boxShadow: 24,
+              borderRadius: 5,
+              p: 4,
+            }}
           >
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                width: "50%",
-                backgroundColor: "#ED3327",
-                "&:hover": { bgcolor: "#ED3327" },
-              }}
+            <Stack
+              direction={"row"}
+              alignItems={"center"}
+              justifyContent={"space-between"}
             >
-              Submit
-            </Button>
+              <Typography variant="h6" component="h2">
+                Create New Feature
+              </Typography>
+              <CloseIcon onClick={handleClose} sx={{ cursor: "pointer" }} />
+            </Stack>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Feature Name"
+              name="name"
+              value={newFeatureName}
+              onChange={handleInputChange}
+            />
+            {error && <Typography color="error">{error}</Typography>}
+            <Box
+              sx={{ mt: 2 }}
+              display={"flex"}
+              width={"100%"}
+              justifyContent={"center"}
+            >
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  width: "50%",
+                  backgroundColor: "#ED3327",
+                  "&:hover": { bgcolor: "#ED3327" },
+                }}
+              >
+                Submit
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </Modal>
-    </div>
-  );
+        </Modal>
+      </div>
+    );
+  }
 };
 
 export default Features;

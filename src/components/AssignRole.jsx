@@ -1,9 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../context/Authcontext";
+import NoAccess from "./NoAccess.jsx";
 
 const AssignRole = () => {
-  return (
-    <div>AssignRole</div>
-  )
-}
+  const [userVerified, setUserVerified] = useState(false);
+  const { verifyUser } = useAuth();
 
-export default AssignRole
+  useEffect(() => {
+    const effect = async () => {
+      let res = await verifyUser(8);
+      setUserVerified(res);
+      if (res) {
+      }
+    };
+    effect();
+  }, []);
+
+  if (!userVerified) {
+    return <NoAccess />;
+  } else {
+    return <div>AssignRole</div>;
+  }
+};
+
+export default AssignRole;
