@@ -181,9 +181,10 @@ export const AuthProvider = ({ children }) => {
 
   const verifyUser = async (auth_page) => {
     try {
+      console.log(auth)
       const response = await axios.post(
         "http://localhost:4000/api/user/verify-page",
-        { id: auth?.user?._id, auth_page },
+        { id: auth?.user?._id || auth?._id, auth_page },
         {
           headers: {
             Authorization:
