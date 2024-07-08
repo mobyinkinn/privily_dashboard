@@ -43,7 +43,7 @@
 //   const fetchPodsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/product/getall",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
 //         {
 //           headers: {
 //             Authorization:
@@ -61,7 +61,7 @@
 //   const fetchLocations = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/location/details",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details",
 //         {
 //           headers: {
 //             Authorization:
@@ -105,7 +105,7 @@
 //     };
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:4000/api/product/create-pods",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
 //         payload,
 //         {
 //           headers: {
@@ -404,7 +404,7 @@
 //   const fetchPodsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/product/getall",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
 //         {
 //           headers: {
 //             Authorization:
@@ -421,7 +421,7 @@
 //   const fetchLocations = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/location/details",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details",
 //         {
 //           headers: {
 //             Authorization:
@@ -441,7 +441,7 @@
 //   const fetchFeatures = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/location/features",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/features",
 //         {
 //           headers: {
 //             Authorization:
@@ -494,7 +494,7 @@
 //     };
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:4000/api/product/create-pods",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
 //         payload,
 //         {
 //           headers: {
@@ -832,7 +832,7 @@
 //   const fetchPodsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/product/getall",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
 //         {
 //           headers: {
 //             Authorization:
@@ -849,7 +849,7 @@
 //   const fetchLocations = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/location/details",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details",
 //         {
 //           headers: {
 //             Authorization:
@@ -869,7 +869,7 @@
 //   const fetchFeatures = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/location/features",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/features",
 //         {
 //           headers: {
 //             Authorization:
@@ -952,7 +952,7 @@
 //     };
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:4000/api/product/create-pods",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
 //         payload,
 //         {
 //           headers: {
@@ -1331,7 +1331,7 @@
 //   const fetchPodsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/product/getall",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
 //         {
 //           headers: {
 //             Authorization:
@@ -1348,7 +1348,7 @@
 //   const fetchLocations = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/location/details",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details",
 //         {
 //           headers: {
 //             Authorization:
@@ -1368,7 +1368,7 @@
 //   const fetchFeatures = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/location/features",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/features",
 //         {
 //           headers: {
 //             Authorization:
@@ -1455,7 +1455,7 @@
 //       formData.append("images", image);
 //       try {
 //         const response = await axios.post(
-//           "http://localhost:4000/api/upload",
+//           "https://hammerhead-app-lqsdj.ondigitalocean.app/api/upload",
 //           formData,
 //           {
 //             headers: {
@@ -1484,7 +1484,7 @@
 //     };
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:4000/api/product/create-pods",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
 //         payload,
 //         {
 //           headers: {
@@ -1561,7 +1561,7 @@
 //                   {pod.images && pod.images.length > 0 && (
 //                     <img
 //                       key={pod.images[0]._id}
-//                       src={`http://localhost:4000${pod.images[0].url}`}
+//                       src={`https://hammerhead-app-lqsdj.ondigitalocean.app${pod.images[0].url}`}
 //                       alt=""
 //                       style={{ width: "50px", height: "50px" }}
 //                     />
@@ -1868,7 +1868,7 @@ const Pods = () => {
   const fetchPodsData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/product/getall",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
         {
           headers: {
             Authorization:
@@ -1885,7 +1885,7 @@ const Pods = () => {
   const fetchLocations = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/location/details",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details",
         {
           headers: {
             Authorization:
@@ -1905,7 +1905,7 @@ const Pods = () => {
   const fetchFeatures = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/location/features",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/features",
         {
           headers: {
             Authorization:
@@ -1985,7 +1985,7 @@ const Pods = () => {
       formData.append("images", image);
       try {
         const response = await axios.post(
-          "http://localhost:4000/api/upload",
+          "https://hammerhead-app-lqsdj.ondigitalocean.app/api/upload",
           formData,
           {
             headers: {
@@ -2015,7 +2015,7 @@ const Pods = () => {
     };
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/product/create-pods",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
         payload,
         {
           headers: {
@@ -2103,7 +2103,7 @@ const Pods = () => {
                     {pod.images && pod.images.length > 0 && (
                       <img
                         key={pod.images[0]._id}
-                        src={`http://localhost:4000${pod.images[0].url}`}
+                        src={`https://hammerhead-app-lqsdj.ondigitalocean.app${pod.images[0].url}`}
                         alt=""
                         style={{ width: "50px", height: "50px" }}
                       />

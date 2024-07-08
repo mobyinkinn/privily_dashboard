@@ -1,12 +1,3 @@
-// import React from 'react'
-
-// const Features = () => {
-//   return (
-//     <div>Features</div>
-//   )
-// }
-
-// export default Features
 
 import React, { useEffect, useState } from "react";
 import {
@@ -38,7 +29,7 @@ const Features = () => {
   const fetchFeatures = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/location/features",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/features",
         {
           headers: {
             Authorization:
@@ -73,7 +64,7 @@ const Features = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/location/create-features",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/create-features",
         { name: newFeatureName },
         {
           headers: {

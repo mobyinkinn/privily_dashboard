@@ -23,7 +23,7 @@ const Dashboard = () => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:4000/api/dashboard/${auth?.user?._id || ""}`
+        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/dashboard/${auth?.user?._id || ""}`
       );
       const data = response.data;
       setData(data);

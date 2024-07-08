@@ -8,7 +8,7 @@
 
 //   const login = async (email, password) => {
 //     try {
-//       const response = await fetch("http://localhost:4000/api/user/login", {
+//       const response = await fetch("https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/login", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -56,7 +56,7 @@
 
 //   const login = async (email, password) => {
 //     try {
-//       const response = await fetch("http://localhost:4000/api/user/login", {
+//       const response = await fetch("https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/login", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -104,7 +104,7 @@
 
 //   const login = async (email, password) => {
 //     try {
-//       const response = await axios.post("http://localhost:4000/api/user/login", {
+//       const response = await axios.post("https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/login", {
 //         email,
 //         password,
 //       });
@@ -157,7 +157,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/user/login",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/login",
         {
           email,
           password,
@@ -181,14 +181,16 @@ export const AuthProvider = ({ children }) => {
 
   const verifyUser = async (auth_page) => {
     try {
+
+      const token = localStorage.getItem("token");
       console.log(auth)
       const response = await axios.post(
-        "http://localhost:4000/api/user/verify-page",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/verify-page",
         { id: auth?.user?._id || auth?._id, auth_page },
         {
           headers: {
             Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
+              `Bearer ${token}`,
           },
         }
       );

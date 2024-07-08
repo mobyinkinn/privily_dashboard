@@ -44,7 +44,7 @@
 //     const fetchLocations = async () => {
 //       try {
 //         const response = await axios.get(
-//           "http://localhost:4000/api/location/details"
+//           "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details"
 //         );
 //          const locationsData = response.data.data;
 //          setLocations(locationsData);
@@ -80,7 +80,7 @@
 //     event.preventDefault();
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:4000/api/location/create",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/create",
 //         formData
 //       );
 //       setLocations([...locations, response.data]);
@@ -353,7 +353,7 @@ const Location = () => {
   const fetchLocations = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/location/details"
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details"
       );
       const locationsData = response.data.data;
       setLocations(locationsData);
@@ -396,7 +396,7 @@ const Location = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/location/create",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/create",
         formData
       );
       setLocations([...locations, response.data]);
@@ -418,8 +418,8 @@ const Location = () => {
 
   const handleSwitchToggle = async (locationId, isBlocked) => {
     const url = isBlocked
-      ? `http://localhost:4000/api/location/unblock-Location/${locationId}`
-      : `http://localhost:4000/api/location/block-Location/${locationId}`;
+      ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/unblock-Location/${locationId}`
+      : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/block-Location/${locationId}`;
 
     try {
       await axios.put(url, null, {
@@ -437,7 +437,7 @@ const Location = () => {
 
       // Refetch the locations to get the updated status
       const response = await axios.get(
-        "http://localhost:4000/api/location/details"
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details"
       );
       const locationsData = response.data.data;
       setLocations(locationsData);

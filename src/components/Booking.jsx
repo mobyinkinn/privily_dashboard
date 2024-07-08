@@ -5,7 +5,7 @@
 
 //   const fetchOtpdata = async () => {
 //     try {
-//       const response = await fetch("http://localhost:4000/api/user/app-login", {
+//       const response = await fetch("https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/app-login", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -261,7 +261,7 @@
 //     const fetchPodsData = async () => {
 //       try {
 //         const response = await axios.get(
-//           "http://localhost:4000/api/user/all-bookings",
+//           "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-bookings",
 //           {
 //             headers: {
 //               Authorization:
@@ -392,6 +392,7 @@ import {
   IconButton,
   Typography,
   Stack,
+  Box,
 } from "@mui/material";
 import { Visibility, Download, Delete } from "@mui/icons-material";
 import axios from "axios";
@@ -409,7 +410,7 @@ const Booking = () => {
   const fetchPodsData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/user/all-bookings",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-bookings",
         {
           headers: {
             Authorization:
@@ -463,7 +464,7 @@ const Booking = () => {
     return <NoAccess />;
   } else {
     return (
-      <>
+      <Box sx={{ padding: "43px 5px" }}>
         <Typography
           variant="h5"
           fontWeight={"bold"}
@@ -552,7 +553,7 @@ const Booking = () => {
             </TableBody>
           </Table>
         </TableContainer>
-      </>
+      </Box>
     );
   }
 };
