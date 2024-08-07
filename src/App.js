@@ -665,6 +665,8 @@ import AssignRole from "./components/AssignRole";
 import Features from "./components/Features";
 import LoginPage from "./context/LoginPage";
 import { useAuth } from "./context/Authcontext";
+import Transactions from "./components/Transactions";
+import VipBooking from "./components/VipBooking";
 
 const AppContainer = styled.div`
   display: flex;
@@ -684,11 +686,17 @@ const routes = [
   { id: 1, path: "/", element: <Dashboard />, name: "Dashboard" },
   { id: 2, path: "/features", element: <Features />, name: "Features" },
   { id: 3, path: "/pods", element: <Pods />, name: "Pods" },
+  // {
+  //   id: 4,
+  //   path: "/vip-booking-pods",
+  //   element: <VipBookingPods />,
+  //   name: "VIP Booking Pods",
+  // },
   {
     id: 4,
-    path: "/vip-booking-pods",
-    element: <VipBookingPods />,
-    name: "VIP Booking Pods",
+    path: "/Transactions",
+    element: <Transactions />,
+    name: "Transactions",
   },
   {
     id: 5,
@@ -699,6 +707,7 @@ const routes = [
   { id: 6, path: "/booking", element: <Booking />, name: "Booking" },
   { id: 7, path: "/location", element: <Location />, name: "Location" },
   { id: 8, path: "/assign-role", element: <AssignRole />, name: "Assign Role" },
+  { id: 9, path: "/Vip-booking", element: <VipBooking />, name: "VipBooking" },
 ];
 
 function App() {
