@@ -286,7 +286,7 @@ const Transactions = () => {
     fetchRate();
     const effect = async () => {
       setVerifying(true);
-      let res = await verifyUser(6);
+      let res = await verifyUser(4);
       setUserVerified(res);
       setVerifying(false);
       if (res) {

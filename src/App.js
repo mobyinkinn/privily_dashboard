@@ -679,7 +679,6 @@ const MainContent = styled.div`
   width: 78%;
   position: absolute;
   padding: 10px 10px;
-  background-color: #f0f2f5;
 `;
 
 const routes = [

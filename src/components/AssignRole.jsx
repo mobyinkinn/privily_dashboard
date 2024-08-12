@@ -67,11 +67,12 @@ const UserDetails = () => {
     Dashboard: "1",
     Features: "2",
     Pods: "3",
-    Vipbooking: "4",
+    Trasactions: "4",
     Users: "5",
     Bookings: "6",
     Locations: "7",
     Assignrole: "8",
+    VipBooking:"9"
   };
 
   const authPages = Object.keys(authPagesMapping);
@@ -79,7 +80,7 @@ const UserDetails = () => {
   useEffect(() => {
     const effect = async () => {
       setVerifying(true)
-      let res = await verifyUser(5);
+      let res = await verifyUser(8);
       setUserVerified(res);
       setVerifying(false)
       if (res) {

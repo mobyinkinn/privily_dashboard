@@ -532,6 +532,8 @@ const handleLogout = () => {
             {route.id === 6 && <EventNoteIcon />}
             {route.id === 7 && <PlaceIcon />}
             {route.id === 8 && <AssignmentIcon />}
+            {route.id === 9 && <AssignmentIcon />}
+
             <MenuItemText active={location.pathname === route.path ? 1 : 0}>
               {route.name}
             </MenuItemText>

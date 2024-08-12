@@ -1,3 +1,6 @@
 .New{
     width: 100%;
 }
+.react-multi-carousel-track{
+    gap: 15px;
+}
