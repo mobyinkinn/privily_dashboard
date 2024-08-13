@@ -31,7 +31,7 @@
 //   const fetchPodsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/user/all-bookings",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-bookings",
 //         {
 //           headers: {
 //             Authorization:
@@ -211,7 +211,7 @@
 //   const fetchPodsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/user/all-bookings",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-bookings",
 //         {
 //           headers: {
 //             Authorization:
@@ -404,7 +404,7 @@ const Booking = () => {
   const fetchPodsData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/user/all-bookings",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-bookings",
         {
           headers: {
             Authorization:

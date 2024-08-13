@@ -36,7 +36,7 @@
 //   const fetchPods = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/product/getall",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
 //         {
 //           headers: {
 //             Authorization:
@@ -58,7 +58,7 @@
 //     try {
 //       const formattedDate = moment(date).format("YYYY-MM-DD");
 //       const response = await axios.get(
-//         `http://localhost:4000/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
+//         `https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
 //       );
 //       const { product_availability } = response.data;
 //       setBookedSlots(product_availability.slot_bookings);
@@ -102,7 +102,7 @@
 //   const fetchRate = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/transactions/getrate"
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getrate"
 //       );
 //       setRate(response.data.rate);
 //     } catch (error) {
@@ -146,7 +146,7 @@
 
 //         try {
 //           const response = await axios.post(
-//             "http://localhost:4000/api/payments",
+//             "https://hammerhead-app-lqsdj.ondigitalocean.app/api/payments",
 //             {
 //               amount: amount,
 //               currency: "ZAR",
@@ -463,7 +463,7 @@ const VipBooking = () => {
   const fetchPods = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/product/getall",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
         {
           headers: {
             Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo',
@@ -484,7 +484,7 @@ const VipBooking = () => {
     try {
       const formattedDate = moment(date).format("YYYY-MM-DD");
       const response = await axios.get(
-        `http://localhost:4000/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
+        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
       );
       const { product_availability } = response.data;
       setBookedSlots(product_availability.slot_bookings);
@@ -635,7 +635,7 @@ const handleBookNow = debounce(async () => {
   const createBooking = async (slugs, bookingDetails) => {
     try {
       const response = await axios.post(
-        `http://localhost:4000/api/user/create-booking/${slugs}`,
+        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/create-booking/${slugs}`,
         bookingDetails,
         {
           headers: {

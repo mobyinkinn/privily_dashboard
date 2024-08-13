@@ -45,7 +45,7 @@
 //   const fetchFeatures = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/location/features",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/features",
 //         {
 //           headers: {
 //             Authorization:
@@ -64,8 +64,8 @@
 //   const handleBlockUnblockUser = async (FeatureID, isBlocked) => {
 //     try {
 //       const url = isBlocked
-//         ? `http://localhost:4000/api/location/unblock-features/${FeatureID}`
-//         : `http://localhost:4000/api/location/block-features/${FeatureID}`;
+//         ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/unblock-features/${FeatureID}`
+//         : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/block-features/${FeatureID}`;
 //       const response = await axios.put(
 //         url,
 //         {},
@@ -106,7 +106,7 @@
 //     event.preventDefault();
 //     try {
 //       const response = await axios.post(
-//         "http://localhost:4000/api/location/create-features",
+//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/create-features",
 //         { name: newFeatureName },
 //         {
 //           headers: {
@@ -137,7 +137,7 @@
 //   const handleDeleteFeature = async () => {
 //     try {
 //       await axios.delete(
-//         `http://localhost:4000/api/location/delete-Location/${deleteUserId}`,
+//         `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/delete-Location/${deleteUserId}`,
 //         {
 //           headers: {
 //             Authorization:
@@ -177,7 +177,7 @@
 //     event.preventDefault();
 //     try {
 //       const response = await axios.put(
-//         `http://localhost:4000/api/location/edit-feature/${currentFeature._id}`,
+//         `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/edit-feature/${currentFeature._id}`,
 //         { name: editFeatureName, isBlocked: currentFeature.isBlocked },
 //         {
 //           headers: {
@@ -567,7 +567,7 @@ const Features = () => {
   const fetchFeatures = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/location/features",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/features",
         {
           headers: {
             Authorization:
@@ -586,8 +586,8 @@ const Features = () => {
   const handleBlockUnblockUser = async (FeatureID, isBlocked) => {
     try {
       const url = isBlocked
-        ? `http://localhost:4000/api/location/unblock-features/${FeatureID}`
-        : `http://localhost:4000/api/location/block-features/${FeatureID}`;
+        ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/unblock-features/${FeatureID}`
+        : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/block-features/${FeatureID}`;
       const response = await axios.put(
         url,
         {},
@@ -630,7 +630,7 @@ const Features = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/location/create-features",
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/create-features",
         { name: newFeatureName },
         {
           headers: {
@@ -661,7 +661,7 @@ const Features = () => {
   const handleDeleteFeature = async () => {
     try {
       await axios.delete(
-        `http://localhost:4000/api/location/delete-Location/${deleteUserId}`,
+        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/delete-Location/${deleteUserId}`,
         {
           headers: {
             Authorization:
@@ -701,7 +701,7 @@ const Features = () => {
     event.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/location/edit-feature/${currentFeature._id}`,
+        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/edit-feature/${currentFeature._id}`,
         { name: editFeatureName, isBlocked: currentFeature.isBlocked },
         {
           headers: {
