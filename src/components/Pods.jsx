@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -61,6 +59,7 @@ const Pods = () => {
     productId: "prod00qd",
     title: "",
     description: "",
+    direction: "",
     location: "",
     category: "6651c4c9d8213019596f5766",
     timeSlot: "9am-5pm",
@@ -80,6 +79,7 @@ const Pods = () => {
     title: "",
     slug: "",
     description: "",
+    direction: "",
     booking_requirements: "",
     cancellation_policy: "",
     availability: "",
@@ -169,6 +169,7 @@ const Pods = () => {
       title: "",
       description: "",
       location: "",
+      direction: "",
       category: "6651c4c9d8213019596f5766",
       timeSlot: "9am-5pm",
       isAvailable: true,
@@ -239,11 +240,14 @@ const Pods = () => {
   };
   const handleEditIconClick = (product) => {
     setCurrentLocation(product);
+     fetchLocations();
+     fetchFeatures();
     setEditFormData({
       deviceId: product.deviceId,
       title: product.title,
       slug: product.slug,
       description: product.description,
+      direction: product.direction,
       booking_requirements: product.booking_requirements,
       cancellation_policy: product.cancellation_policy,
       availability: product.availability,
@@ -770,7 +774,19 @@ const Pods = () => {
                   ))}
                 </Select>
               </Stack>
-              <input type="file" multiple onChange={handleImageChange} />
+              <Stack direction={"row"} gap={2}>
+                <input type="file" multiple onChange={handleImageChange} />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Direction"
+                  name="direction"
+                  value={formData.direction}
+                  onChange={handleInputChange}
+                />
+              </Stack>
+
               <Stack direction={"row"} gap={2}>
                 <TextField
                   margin="normal"
@@ -893,6 +909,15 @@ const Pods = () => {
                   label="Description"
                   name="description"
                   value={editFormData.description}
+                  onChange={handleEditInputChange}
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Direction"
+                  name="direction"
+                  value={editFormData.direction}
                   onChange={handleEditInputChange}
                 />
                 <TextField

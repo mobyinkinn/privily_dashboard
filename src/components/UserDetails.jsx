@@ -50,7 +50,7 @@ const UserDetails = () => {
   const fetchPodsData = async () => {
     try {
       const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-users",
+        "http://localhost:4000/api/user/all-users",
         {
           headers: {
             Authorization:
@@ -70,8 +70,8 @@ const UserDetails = () => {
   const handleBlockUnblockUser = async (userId, isBlocked) => {
     try {
       const url = isBlocked
-        ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/unblock-user/${userId}`
-        : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/block-user/${userId}`;
+        ? `http://localhost:4000/api/user/unblock-user/${userId}`
+        : `http://localhost:4000/api/user/block-user/${userId}`;
       const response = await axios.put(
         url,
         {},
@@ -95,7 +95,7 @@ const UserDetails = () => {
 
   const handleDeleteUser = async () => {
     try {
-      await axios.delete(`https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/${deleteUserId}`, {
+      await axios.delete(`http://localhost:4000/api/user/${deleteUserId}`, {
         headers: {
           Authorization:
             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",

@@ -93,7 +93,7 @@ const UserDetails = () => {
   const fetchPodsData = async () => {
     try {
       const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-staff",
+        "http://localhost:4000/api/user/all-staff",
         {
           headers: {
             Authorization:
@@ -111,8 +111,8 @@ const UserDetails = () => {
     console.log("userId", userId);
     try {
       const url = isBlocked
-        ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/unblock-staff/${userId}`
-        : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/block-staff/${userId}`;
+        ? `http://localhost:4000/api/user/unblock-staff/${userId}`
+        : `http://localhost:4000/api/user/block-staff/${userId}`;
       const response = await axios.put(
         url,
         {},
@@ -137,7 +137,7 @@ const UserDetails = () => {
   const handleDeleteUser = async () => {
     try {
       await axios.delete(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/delete-staff/${deleteUserId}`,
+        `http://localhost:4000/api/user/delete-staff/${deleteUserId}`,
         {
           headers: {
             Authorization:
@@ -171,7 +171,7 @@ const UserDetails = () => {
 
     try {
       const response = await axios.post(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/register-staff",
+        "http://localhost:4000/api/user/register-staff",
         newStaffData,
         {
           headers: {
@@ -199,7 +199,7 @@ const UserDetails = () => {
  }
     try {
       const response = await axios.put(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/edit-staff/${currentStaff._id}`,
+        `http://localhost:4000/api/user/edit-staff/${currentStaff._id}`,
         editStaffData,
         {
           headers: {

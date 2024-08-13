@@ -32,7 +32,7 @@
 //   const fetchTransactionsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getalltransactions",
+//         "http://localhost:4000/api/transactions/getalltransactions",
 //         {
 //           headers: {
 //             Authorization:
@@ -266,7 +266,7 @@ const Transactions = () => {
   const fetchTransactionsData = async () => {
     try {
       const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getalltransactions",
+        "http://localhost:4000/api/transactions/getalltransactions",
         {
           headers: {
             Authorization:
@@ -331,7 +331,7 @@ const Transactions = () => {
 const fetchRate = async () => {
   try {
     const response = await axios.get(
-      "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getrate"
+      "http://localhost:4000/api/transactions/getrate"
     );
     setShowrate(response.data.rate);
   } catch (error) {
@@ -349,7 +349,7 @@ const fetchRate = async () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/ManageRates", {
+      const response = await axios.post("http://localhost:4000/api/transactions/ManageRates", {
         rate,
       });
       console.log("Rate created successfully:", response.data);
