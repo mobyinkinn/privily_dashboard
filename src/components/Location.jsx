@@ -449,7 +449,7 @@ const Location = () => {
                   className="New"
                   required
                   fullWidth
-                  label="State"
+                  label="Province"
                   name="state"
                   value={formData.state}
                   onChange={handleInputChange}
@@ -459,7 +459,7 @@ const Location = () => {
                   className="New"
                   required
                   fullWidth
-                  label="Country Code"
+                  label="Country"
                   name="country_code"
                   value={formData.country_code}
                   onChange={handleInputChange}

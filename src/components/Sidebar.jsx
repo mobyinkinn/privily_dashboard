@@ -456,7 +456,7 @@ const MenuItem = styled(Link)`
   display: flex;
   align-items: center;
   border-radius: 20px;
-  padding: 15px 20px;
+  padding: 13px 20px;
   color: ${(props) => (props.active ? "white" : "#333")};
   text-decoration: none;
   font-size: 18px;
@@ -470,6 +470,7 @@ const MenuItem = styled(Link)`
 
 const MenuItemText = styled.span`
   margin-left: 10px;
+  font-size:15px;
   color: ${(props) => (props.active ? "white" : "#333")};
 `;
 const Sidebar = ({ authorization_routes }) => {
@@ -484,7 +485,7 @@ const handleLogout = () => {
     <SidebarContainer>
       <Logo>
         <Link to="/">
-          <img src={logo} alt="" style={{ width: "173px", height: "50px" }} />
+          <img src={logo} alt="" style={{ width: "153px", height: "40px" }} />
         </Link>
       </Logo>
       <Menu>
@@ -546,6 +547,7 @@ const handleLogout = () => {
           variant="contained"
           sx={{
             width: "200px",
+            fontSize: "12px",
             backgroundColor: "#ED3327",
             borderRadius: "10px",
             "&:hover": {
@@ -561,6 +563,7 @@ const handleLogout = () => {
           variant="contained"
           sx={{
             width: "200px",
+            fontSize: "12px",
             backgroundColor: "#ED3327",
             borderRadius: "10px",
             "&:hover": {
