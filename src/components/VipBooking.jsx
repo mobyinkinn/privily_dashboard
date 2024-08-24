@@ -436,6 +436,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import moment from "moment";
 import debounce from "lodash.debounce";
+import { Button, Stack, Typography } from "@mui/material";
 
 const VipBooking = () => {
   const [purpose, setPurpose] = useState("");
@@ -711,7 +712,13 @@ const handleBookNow = debounce(async () => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>VIP Booking</div>
+      <Typography
+        variant="h5"
+        fontWeight={"bold"}
+        sx={{ marginBottom: 2, color: "#ED3327" }}
+      >
+        VIP Booking
+      </Typography>
 
       <div style={styles.field}>
         <label>Purpose:</label>
@@ -792,8 +799,6 @@ const handleBookNow = debounce(async () => {
 const styles = {
   container: {
     padding: "20px",
-    maxWidth: "600px",
-    margin: "0 auto",
     backgroundColor: "#f5f5f5",
     borderRadius: "8px",
   },

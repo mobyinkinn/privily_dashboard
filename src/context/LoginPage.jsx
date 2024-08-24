@@ -178,7 +178,11 @@ import {
   Divider,
   IconButton,
 } from "@mui/material";
-import { Google as GoogleIcon } from "@mui/icons-material";
+import {
+  Google as GoogleIcon,
+  Visibility,
+  VisibilityOff,
+} from "@mui/icons-material";
 import { useAuth } from "../context/Authcontext";
 
 const LoginPage = () => {
@@ -187,7 +191,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+const [showPassword, setShowPassword] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -197,7 +201,9 @@ const LoginPage = () => {
       setError(error.message);
     }
   };
-
+const togglePasswordVisibility = () => {
+  setShowPassword((prev) => !prev);
+};
   return (
     <Container
       maxWidth="xs"
@@ -219,7 +225,7 @@ const LoginPage = () => {
         }}
       >
         <Typography variant="h5" color="#ff6b6b" mb={2}>
-          Log in to Privily Dashboard
+          Log in to the Privily Admin Portal
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField
@@ -234,15 +240,22 @@ const LoginPage = () => {
           <TextField
             fullWidth
             label="Password"
-            type="password"
+            type={showPassword ? "text" : "password"} // Change type based on showPassword
             variant="outlined"
             margin="normal"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            InputProps={{
+              endAdornment: (
+                <IconButton onClick={togglePasswordVisibility}>
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              ),
+            }}
           />
           {error && <Typography color="error">{error}</Typography>}
-          
+
           <Button
             type="submit"
             variant="contained"
@@ -257,7 +270,6 @@ const LoginPage = () => {
             Log in
           </Button>
         </form>
-        
       </Box>
     </Container>
   );

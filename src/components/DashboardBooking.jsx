@@ -131,7 +131,10 @@ const DashboardBooking = ({ Booking }) => {
       >
         Bookings
       </Typography>
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+      <TableContainer
+        component={Paper}
+        sx={{ marginTop: 2, boxShadow:"0px 0px 3px 0px grey" }}
+      >
         <Table>
           <TableHead>
             <TableRow>
@@ -150,14 +153,19 @@ const DashboardBooking = ({ Booking }) => {
             {paginatedBookings.map((feature) => (
               <TableRow key={feature._id}>
                 <TableCell>{feature._id}</TableCell>
-                <TableCell>{feature.name}</TableCell>
+                <TableCell>{feature.bookingDate}</TableCell>
                 <TableCell>
                   <Button
                     variant="contained"
-                    color={feature.isBlocked === false ? "success" : "error"}
+                    color={
+                      feature.status === "Rated" ||
+                      feature.status === "Completed"
+                        ? "success"
+                        : "error"
+                    }
                     sx={{ borderRadius: "20px" }}
                   >
-                    {feature.isBlocked === false ? "active" : "Inactive"}
+                    {feature.status}
                   </Button>
                 </TableCell>
               </TableRow>

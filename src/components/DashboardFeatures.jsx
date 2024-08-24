@@ -29,7 +29,10 @@ const DashboardFeatures = ({ Features }) => {
         >
           Features
         </Typography>
-        <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+        <TableContainer
+          component={Paper}
+          sx={{ marginTop: 2, boxShadow: "0px 0px 3px 0px grey" }}
+        >
           <Table>
             <TableHead>
               <TableRow>
@@ -62,28 +65,25 @@ const DashboardFeatures = ({ Features }) => {
                       </TableCell>
                     </TableRow>
                   )) */}
-                
+
               {Features.map((feature) => (
-                    <TableRow key={feature._id}>
-                      <TableCell>{feature._id}</TableCell>
-                      <TableCell>{feature.name}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          color={
-                            feature.isBlocked === false ? "success" : "error"
-                          }
-                          sx={{ borderRadius: "20px" }}
-                        >
-                          {feature.isBlocked === false ? "active" : "Inactive"}
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                <TableRow key={feature._id}>
+                  <TableCell>{feature._id}</TableCell>
+                  <TableCell>{feature.name}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color={feature.isBlocked === false ? "success" : "error"}
+                      sx={{ borderRadius: "20px" }}
+                    >
+                      {feature.isBlocked === false ? "active" : "Inactive"}
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
-
       </Box>
     );
 };

@@ -53,6 +53,11 @@ const Pods = () => {
   const [deleteUserId, setDeleteUserId] = useState(null);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [verifying, setVerifying] = useState(true);
+  const [errors, setErrors] = useState({
+    location: false,
+    features: false,
+    images: false,
+  });
   const [formData, setFormData] = useState({
     UserId: "",
     deviceId: "",
@@ -105,13 +110,15 @@ const Pods = () => {
           },
         }
       );
+      
       setPodsData(response.data);
-      setLoading(false); // Set loading to false after data is fetched
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching data: ", error);
-      setLoading(false); // Set loading to false even if there's an error
+      setLoading(false);
     }
   };
+
 
   const fetchLocations = async () => {
     try {
@@ -132,6 +139,7 @@ const Pods = () => {
       console.error("Error fetching locations: ", error);
     }
   };
+ 
 
   const fetchFeatures = async () => {
     try {
@@ -238,11 +246,13 @@ const Pods = () => {
     setImageUrls(uploadedUrls);
     return uploadedUrls;
   };
+
   const handleEditIconClick = (product) => {
     setCurrentLocation(product);
-     fetchLocations();
-     fetchFeatures();
+    fetchLocations();
+    fetchFeatures();
     setEditFormData({
+      UserId: product.UserId || "",
       deviceId: product.deviceId,
       title: product.title,
       slug: product.slug,
@@ -252,12 +262,12 @@ const Pods = () => {
       cancellation_policy: product.cancellation_policy,
       availability: product.availability,
       isBlocked: product.isBlocked,
-      location: product.location._id, // Ensure location ID is set
-      features: product.features.map((feature) => feature._id), // Map feature objects to feature IDs
+      location: product.location._id, // Use an empty string if location is undefined
+      features: product.features.map((feature) => feature._id),
       category: product.category,
       timeSlot: product.timeSlot,
       isAvailable: product.isAvailable,
-      images: product.images.map((image) => image.url), // Map image objects to image URLs
+      images: product.images.map((image) => image.url),
       tags: product.tags,
     });
     setEditModalOpen(true);
@@ -340,37 +350,83 @@ const Pods = () => {
       setError("Error updating pod");
     }
   };
+const handleSubmit = async (event) => {
+  event.preventDefault();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const uploadedUrls = await handleImageUpload();
-    const payload = {
-      ...formData,
-      location: selectedLocation,
-      features: selectedFeatures,
-      images: uploadedUrls.map((url) => ({ public_id: "image", url })),
-    };
-    try {
-      const response = await axios.post(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
-        payload,
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      if (response.status === 200) {
-        setAlertOpen(true);
-      }
-      handleClose();
-      fetchPodsData();
-    } catch (error) {
-      console.error("Error creating pod: ", error);
-      setError("Error creating pod");
-    }
+  // Validate required fields
+  const hasError = {
+    location: !selectedLocation,
+    features: selectedFeatures.length === 0,
+    images: images.length === 0,
   };
+
+  setErrors(hasError);
+
+  // Check if there are any errors
+  if (Object.values(hasError).some((error) => error)) {
+    return; // Do not proceed if there are validation errors
+  }
+
+  const uploadedUrls = await handleImageUpload();
+  const payload = {
+    ...formData,
+    location: selectedLocation,
+    features: selectedFeatures,
+    images: uploadedUrls.map((url) => ({ public_id: "image", url })),
+  };
+
+  try {
+    const response = await axios.post(
+      "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
+      payload,
+      {
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
+        },
+      }
+    );
+    if (response.status === 200) {
+      setAlertOpen(true);
+    }
+    handleClose();
+    fetchPodsData();
+  } catch (error) {
+    console.error("Error creating pod: ", error);
+    setError("Error creating pod");
+  }
+};
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const uploadedUrls = await handleImageUpload();
+  //   const payload = {
+  //     ...formData,
+  //     location: selectedLocation,
+  //     features: selectedFeatures,
+  //     images: uploadedUrls.map((url) => ({ public_id: "image", url })),
+  //   };
+  //   try {
+  //     const response = await axios.post(
+  //       "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
+  //       payload,
+  //       {
+  //         headers: {
+  //           Authorization:
+  //             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
+  //         },
+  //       }
+  //     );
+  //     if (response.status === 200) {
+  //       setAlertOpen(true);
+  //     }
+  //     handleClose();
+  //     fetchPodsData();
+  //   } catch (error) {
+  //     console.error("Error creating pod: ", error);
+  //     setError("Error creating pod");
+  //   }
+  // };
   const handleBlockUnblockUser = async (userId, isBlocked) => {
     try {
       const url = isBlocked
@@ -680,16 +736,16 @@ const Pods = () => {
             <Stack spacing={2}>
               <Stack direction={"row"} gap={2}>
                 <TextField
-                  margin="normal"
-                  required
                   style={{ width: "50%" }}
-                  label="User Id"
+                  required
+                  fullWidth
+                  label="User ID"
                   name="UserId"
                   value={formData.UserId}
                   onChange={handleInputChange}
                 />
+
                 <TextField
-                  margin="normal"
                   required
                   style={{ width: "50%" }}
                   label="Device ID"
@@ -698,24 +754,24 @@ const Pods = () => {
                   onChange={handleInputChange}
                 />
               </Stack>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                label="Title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-              />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                label="Description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-              />
+              <Stack direction={"row"} gap={2}>
+                <TextField
+                  required
+                  fullWidth
+                  label="Title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  required
+                  fullWidth
+                  label="Description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                />
+              </Stack>
               <Stack direction={"row"} gap={2}>
                 <Select
                   style={{ width: "50%" }}
@@ -733,16 +789,32 @@ const Pods = () => {
                       ? `${location.name}, ${location.city}, ${location.state}, ${location.zip}`
                       : "Unknown Location";
                   }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxWidth: "200px", // Set the maximum width of the dropdown menu
+                        wordWrap: "break-word", // Ensure long text wraps to the next line
+                      },
+                    },
+                  }}
+                  sx={{ width: "200px" }}
                 >
                   <MenuItem disabled value="">
                     <em>Select Location</em>
                   </MenuItem>
                   {locations.map((location) => (
-                    <MenuItem key={location._id} value={location._id}>
+                    <MenuItem
+                      key={location._id}
+                      value={location._id}
+                      style={{ whiteSpace: "wrap" }}
+                    >
                       {`${location.name}, ${location.city}, ${location.state}, ${location.zip}`}
                     </MenuItem>
                   ))}
                 </Select>
+                {errors.location && (
+                  <Typography color="error">Location is required</Typography>
+                )}
                 <Select
                   multiple
                   style={{ width: "50%" }}
@@ -773,23 +845,19 @@ const Pods = () => {
                     </MenuItem>
                   ))}
                 </Select>
+                {errors.features && (
+                  <Typography color="error">
+                    At least one feature is required
+                  </Typography>
+                )}
               </Stack>
               <Stack direction={"row"} gap={2}>
                 <input type="file" multiple onChange={handleImageChange} />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Direction"
-                  name="direction"
-                  value={formData.direction}
-                  onChange={handleInputChange}
-                />
+                
               </Stack>
 
               <Stack direction={"row"} gap={2}>
                 <TextField
-                  margin="normal"
                   required
                   style={{ width: "50%" }}
                   label="Booking Requirements"
@@ -798,7 +866,17 @@ const Pods = () => {
                   onChange={handleInputChange}
                 />
                 <TextField
-                  margin="normal"
+                  required
+                  style={{ width: "50%" }}
+                  fullWidth
+                  label="Location"
+                  name="direction"
+                  value={formData.direction}
+                  onChange={handleInputChange}
+                />
+              </Stack>
+              <Stack direction={"row"} gap={2}>
+                <TextField
                   required
                   style={{ width: "50%" }}
                   label="Availability"
@@ -806,16 +884,16 @@ const Pods = () => {
                   value={formData.availability}
                   onChange={handleInputChange}
                 />
+                <TextField
+                  style={{ width: "50%" }}
+                  required
+                  fullWidth
+                  label="Cancellation Policy"
+                  name="cancellation_policy"
+                  value={formData.cancellation_policy}
+                  onChange={handleInputChange}
+                />
               </Stack>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                label="Cancellation Policy"
-                name="cancellation_policy"
-                value={formData.cancellation_policy}
-                onChange={handleInputChange}
-              />
               <Box
                 sx={{ mt: 2 }}
                 display={"flex"}
@@ -874,7 +952,7 @@ const Pods = () => {
             <Stack spacing={2}>
               <Stack direction={"row"} gap={2}>
                 <TextField
-                  margin="normal"
+                  style={{ width: "50%" }}
                   required
                   fullWidth
                   label="User ID"
@@ -883,7 +961,7 @@ const Pods = () => {
                   onChange={handleEditInputChange}
                 />
                 <TextField
-                  margin="normal"
+                  style={{ width: "50%" }}
                   required
                   fullWidth
                   label="Device ID"
@@ -891,8 +969,9 @@ const Pods = () => {
                   value={editFormData.deviceId}
                   onChange={handleEditInputChange}
                 />
+              </Stack>
+              <Stack direction={"row"} gap={2}>
                 <TextField
-                  margin="normal"
                   required
                   fullWidth
                   label="Title"
@@ -900,10 +979,7 @@ const Pods = () => {
                   value={editFormData.title}
                   onChange={handleEditInputChange}
                 />
-              </Stack>
-              <Stack direction={"row"} gap={2}>
                 <TextField
-                  margin="normal"
                   required
                   fullWidth
                   label="Description"
@@ -911,78 +987,48 @@ const Pods = () => {
                   value={editFormData.description}
                   onChange={handleEditInputChange}
                 />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Direction"
-                  name="direction"
-                  value={editFormData.direction}
-                  onChange={handleEditInputChange}
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Booking Requirements"
-                  name="booking_requirements"
-                  value={editFormData.booking_requirements}
-                  onChange={handleEditInputChange}
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Cancellation Policy"
-                  name="cancellation_policy"
-                  value={editFormData.cancellation_policy}
-                  onChange={handleEditInputChange}
-                />
               </Stack>
-              <Select
-                value={editFormData.location}
-                onChange={(e) =>
-                  setEditFormData({
-                    ...editFormData,
-                    location: e.target.value,
-                  })
-                }
-                displayEmpty
-                renderValue={(selected) => {
-                  if (!selected) {
-                    return <em>Select Location</em>;
-                  }
-                  const location = locations.find(
-                    (location) => location._id === selected
-                  );
-                  return location ? (
-                    `${location.name}, ${location.city}, ${location.state}, ${location.zip}`
-                  ) : (
-                    <em>Select Location</em>
-                  );
-                }}
-              >
-                <MenuItem disabled value="">
-                  <em>Select Location</em>
-                </MenuItem>
-                {locations.map((location) => (
-                  <MenuItem key={location._id} value={location._id}>
-                    {`${location.name}, ${location.city}, ${location.state}, ${location.zip}`}
-                  </MenuItem>
-                ))}
-              </Select>
-
               <Stack direction={"row"} gap={2}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Availability"
-                  name="availability"
-                  value={editFormData.availability}
-                  onChange={handleEditInputChange}
-                />
-
+                <Select
+                  style={{ width: "50%" }}
+                  value={editFormData.location}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      location: e.target.value,
+                    })
+                  }
+                  displayEmpty
+                  renderValue={(selected) => {
+                    if (!selected) {
+                      return <em>Select Location</em>;
+                    }
+                    const location = locations.find(
+                      (location) => location._id === selected
+                    );
+                    return location
+                      ? `${location.name}, ${location.city}, ${location.state}, ${location.zip}`
+                      : "Unknown Location"; // Provide a meaningful fallback
+                  }}
+                  MenuProps={{
+                    PaperProps: {
+                      style: {
+                        maxWidth: "200px", // Set the maximum width of the dropdown menu
+                        wordWrap: "break-word",
+                      },
+                    },
+                  }}
+                  sx={{ width: "200px" }}
+                >
+                  <MenuItem disabled value="">
+                    <em>Select Location</em>
+                  </MenuItem>
+                  {locations.map((location) => (
+                    <MenuItem key={location._id} value={location._id}>
+                      {`${location.name}, ${location.city}, ${location.state}, ${location.zip}`}
+                    </MenuItem>
+                  ))}
+                </Select>
                 <Select
                   multiple
                   style={{ width: "50%" }}
@@ -1022,39 +1068,52 @@ const Pods = () => {
                 </Select>
               </Stack>
               <Stack direction={"row"} gap={2}>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Category"
-                  name="category"
-                  value={editFormData.category}
-                  onChange={handleEditInputChange}
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Time Slot"
-                  name="timeSlot"
-                  value={editFormData.timeSlot}
-                  onChange={handleEditInputChange}
-                />
                 <input
                   type="file"
                   multiple
                   onChange={handleEditImageChange} // New handler for image change
                 />
               </Stack>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                label="Tags"
-                name="tags"
-                value={editFormData.tags}
-                onChange={handleEditInputChange}
-              />
+              <Stack direction={"row"} gap={2}>
+                <TextField
+                  style={{ width: "50%" }}
+                  required
+                  fullWidth
+                  label="Location"
+                  name="direction"
+                  value={editFormData.direction}
+                  onChange={handleEditInputChange}
+                />
+                <TextField
+                  style={{ width: "50%" }}
+                  required
+                  fullWidth
+                  label="Booking Requirements"
+                  name="booking_requirements"
+                  value={editFormData.booking_requirements}
+                  onChange={handleEditInputChange}
+                />
+              </Stack>
+              <Stack direction={"row"} gap={2}>
+                <TextField
+                  style={{ width: "50%" }}
+                  required
+                  fullWidth
+                  label="Cancellation Policy"
+                  name="cancellation_policy"
+                  value={editFormData.cancellation_policy}
+                  onChange={handleEditInputChange}
+                />
+                <TextField
+                  required
+                  style={{ width: "50%" }}
+                  fullWidth
+                  label="Availability"
+                  name="availability"
+                  value={editFormData.availability}
+                  onChange={handleEditInputChange}
+                />
+              </Stack>
             </Stack>
             <Box
               sx={{ mt: 2 }}

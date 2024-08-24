@@ -75,7 +75,10 @@ const PodsSlide = ({ pods }) => {
     },
   };
   return (
-    <Stack sx={{ width: { lg: "98%", xs: "93%" } }} padding={"40px 0 40px 20px"}>
+    <Stack
+      sx={{ width: { lg: "98%", xs: "93%" } }}
+      padding={"40px 0 40px 20px"}
+    >
       <Typography
         variant="h5"
         fontWeight={"bold"}
@@ -86,11 +89,10 @@ const PodsSlide = ({ pods }) => {
       <Carousel responsive={responsive}>
         {pods?.map((d, index) => (
           <Stack
+            bgcolor={"#F1EFEF"}
             sx={{
-              
-              width: { lg: "100%", md: "30%", sm: "95%", xs: "95%" },
+              width: { lg: "87%", md: "30%", sm: "95%", xs: "95%" },
               borderRadius: "25px",
-              backgroundColor: "white",
               cursor: "pointer",
             }}
             key={index}
@@ -105,28 +107,30 @@ const PodsSlide = ({ pods }) => {
                   src={`https://hammerhead-app-lqsdj.ondigitalocean.app${d.images[0].url}`}
                   className="Images-correct"
                   style={{
-                    width: "72%",
+                    width: "90%",
                     objectFit: "contain",
                     borderRadius: "16px 16px 0 0",
                   }}
                 />
               )}
             </Stack>
-            <Stack sx={{ p: "2px 10px 10px 17px" }}>
+            <Stack>
               <Typography
-                fontSize={{ lg: "18px", xs: "15px" }}
+                fontSize={{ lg: "22px", xs: "15px" }}
                 fontWeight={"bold"}
-                textAlign={"left"}
+                textAlign={"center"}
+                textTransform={"capitalize"}
                 gutterBottom
               >
                 {d.title}
               </Typography>
               <Typography
                 fontSize={{ lg: "17px", xs: "10px" }}
-                textAlign={"left"}
+                textAlign={"center"}
                 gutterBottom
               >
-                {d.address}
+                {d.location.name}
+                {d.location.city}
               </Typography>
               {/* <Stack
                 direction={"row"}

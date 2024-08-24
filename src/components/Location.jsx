@@ -126,10 +126,46 @@ const Location = () => {
     }
   };
 
-  const handleSwitchToggle = async (locationId, isBlocked) => {
-    const url = isBlocked
-      ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/unblock-Location/${locationId}`
-      : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/block-Location/${locationId}`;
+  // const handleSwitchToggle = async (locationId, isBlocked) => {
+  //   const url = isBlocked
+  //     ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/unblock-Location/${locationId}`
+  //     : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/block-Location/${locationId}`;
+
+  //   try {
+  //     await axios.put(url, null, {
+  //       headers: {
+  //         Authorization:
+  //           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo", // Replace with actual bearer token
+  //       },
+  //     });
+
+  //     // Update the blocked status
+  //     setBlockedStatus((prevStatus) => ({
+  //       ...prevStatus,
+  //       [locationId]: !isBlocked,
+  //     }));
+
+  //     // Refetch the locations to get the updated status
+  //     const response = await axios.get(
+  //       "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details"
+  //     );
+  //     const locationsData = response.data.data;
+  //     setLocations(locationsData);
+  //     const status = {};
+  //     locationsData.forEach((location) => {
+  //       status[location._id] = location.isBlocked;
+  //     });
+  //     setBlockedStatus(status);
+  //   } catch (error) {
+  //     console.error("Error toggling block status:", error);
+  //   }
+  // };
+
+  const handleSwitchToggle = async (locationId, isUnblocked) => {
+    // Renamed parameter for clarity
+    const url = isUnblocked
+      ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/block-Location/${locationId}` // Reverse the URLs
+      : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/unblock-Location/${locationId}`;
 
     try {
       await axios.put(url, null, {
@@ -142,7 +178,7 @@ const Location = () => {
       // Update the blocked status
       setBlockedStatus((prevStatus) => ({
         ...prevStatus,
-        [locationId]: !isBlocked,
+        [locationId]: !isUnblocked, // Reverse logic for updating state
       }));
 
       // Refetch the locations to get the updated status
@@ -316,7 +352,7 @@ const Location = () => {
                       alignItems: "center",
                     }}
                   >
-                    <Switch
+                    {/* <Switch
                       checked={blockedStatus[location._id] || false}
                       onChange={() =>
                         handleSwitchToggle(
@@ -324,7 +360,17 @@ const Location = () => {
                           blockedStatus[location._id]
                         )
                       }
+                    /> */}
+                    <Switch
+                      checked={!blockedStatus[location._id]} // Default "checked" when the location is unblocked
+                      onChange={() =>
+                        handleSwitchToggle(
+                          location._id,
+                          !blockedStatus[location._id]
+                        )
+                      } // Reverse logic for toggling
                     />
+
                     <IconButton onClick={() => handleEditIconClick(location)}>
                       <Edit />
                     </IconButton>

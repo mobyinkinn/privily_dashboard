@@ -461,26 +461,32 @@ useEffect(() => {
   };
   effect();
 }, []);
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/dashboard/${
-          auth?.user?._id || ""
-        }`
-      );
-      const Alldata = response.data.data;
-      console.log("Alldata.pods", Alldata.pods);
-      setData(data);
-      setpods(Alldata.pods);
-      setFeatures(Alldata.feature);
-      setBooking(Alldata.bookings);
-      setTransaction(Alldata.Transaction);
-      setLocation(Alldata.location)
-      setUserDetail(Alldata.userDetails);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+ const fetchData = async () => {
+   try {
+     const userId = auth?.user?._id || auth?._id;
+     if (!userId) {
+       throw new Error("User ID is missing in the auth object");
+     }
+
+     const response = await axios.get(
+       `https://hammerhead-app-lqsdj.ondigitalocean.app/api/dashboard/${userId}`
+     );
+
+     const Alldata = response.data.data;
+     console.log("Fetched data:", Alldata);
+
+     setData(data);
+     setpods(Alldata.pods);
+     setFeatures(Alldata.feature);
+     setBooking(Alldata.bookings);
+     setTransaction(Alldata.Transaction);
+     setLocation(Alldata.location);
+     setUserDetail(Alldata.userDetails);
+   } catch (error) {
+     console.error("Error fetching data:", error.message);
+   }
+ };
+
 
   useEffect(() => {
     fetchData();
