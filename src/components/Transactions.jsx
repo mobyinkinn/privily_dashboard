@@ -1,3 +1,4 @@
+
 // import React, { useEffect, useState } from "react";
 // import {
 //   Table,
@@ -13,6 +14,12 @@
 //   Typography,
 //   Skeleton,
 //   CircularProgress,
+//   Dialog,
+//   DialogActions,
+//   DialogContent,
+//   DialogContentText,
+//   DialogTitle,
+//   TextField,
 // } from "@mui/material";
 // import { CSVLink } from "react-csv";
 // import axios from "axios";
@@ -36,7 +43,7 @@
 //         {
 //           headers: {
 //             Authorization:
-//               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
+//               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3Mjg4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
 //           },
 //         }
 //       );
@@ -49,9 +56,10 @@
 //   };
 
 //   useEffect(() => {
+//     fetchRate();
 //     const effect = async () => {
 //       setVerifying(true);
-//       let res = await verifyUser(6);
+//       let res = await verifyUser(4);
 //       setUserVerified(res);
 //       setVerifying(false);
 //       if (res) {
@@ -88,6 +96,42 @@
 //     filename: "Transactions_Report.csv",
 //     headers: headers,
 //     data: transactionsData,
+//   };
+
+//   const [open, setOpen] = useState(false);
+//   const [rate, setRate] = useState("");
+//   const [Showrate, setShowrate] = useState()
+// const fetchRate = async () => {
+//   try {
+//     const response = await axios.get(
+//       "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getrate"
+//     );
+//     setShowrate(response.data.rate);
+//   } catch (error) {
+//     console.error("Error fetching rate:", error);
+//   }
+// };
+
+//   const handleClickOpen = () => {
+//     setOpen(true);
+//   };
+
+//   const handleClose = () => {
+//     setOpen(false);
+//   };
+
+//   const handleSubmit = async () => {
+//     try {
+//       const response = await axios.post("https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/ManageRates", {
+//         rate,
+//       });
+//       console.log("Rate created successfully:", response.data);
+//       handleClose();
+//       setRate("")
+//       fetchRate();
+//     } catch (error) {
+//       console.error("Error creating rate:", error);
+//     }
 //   };
 
 //   if (verifying) {
@@ -135,8 +179,9 @@
 //             <Button
 //               variant="outlined"
 //               startIcon={<AddIcon />}
-//               onClick={() =>                                                   (true)}
-//             >Manage Rate
+//               onClick={handleClickOpen}
+//             >
+//               Manage Rate
 //             </Button>
 //           </Stack>
 //           <Stack direction={"row"} spacing={2}>
@@ -164,9 +209,6 @@
 //               {loading
 //                 ? [1, 2, 3, 4, 5].map((n) => (
 //                     <TableRow key={n}>
-//                       <TableCell>
-//                         <Skeleton />
-//                       </TableCell>
 //                       <TableCell>
 //                         <Skeleton />
 //                       </TableCell>
@@ -220,12 +262,40 @@
 //             </TableBody>
 //           </Table>
 //         </TableContainer>
+//         <Dialog open={open} onClose={handleClose}>
+//           <DialogTitle>Manage Rate</DialogTitle>
+//           <DialogContent>
+//             <DialogContentText>
+//               Please enter the rate and status.
+//             </DialogContentText>
+//             <DialogContentText>
+//               Your current Base price is {Showrate} ZAR.
+//             </DialogContentText>
+//             <TextField
+//               autoFocus
+//               margin="dense"
+//               id="rate"
+//               label="Rate"
+//               type="text"
+//               fullWidth
+//               variant="standard"
+//               value={rate}
+//               onChange={(e) => setRate(e.target.value)}
+//             />
+//           </DialogContent>
+//           <DialogActions>
+//             <Button onClick={handleClose}>Cancel</Button>
+//             <Button onClick={handleSubmit}>Submit</Button>
+//           </DialogActions>
+//         </Dialog>
 //       </Box>
 //     );
 //   }
 // };
 
 // export default Transactions;
+
+
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -247,6 +317,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  Pagination,
 } from "@mui/material";
 import { CSVLink } from "react-csv";
 import axios from "axios";
@@ -257,12 +328,16 @@ import AddIcon from "@mui/icons-material/Add";
 
 const Transactions = () => {
   const [newFeatureSign, setNewFeatureName] = useState("");
-
   const [transactionsData, setTransactionsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [verifying, setVerifying] = useState(true);
   const [userVerified, setUserVerified] = useState(false);
   const { verifyUser } = useAuth();
+
+  // Add state variables for pagination
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 6; // Number of items per page
+
   const fetchTransactionsData = async () => {
     try {
       const response = await axios.get(
@@ -327,17 +402,18 @@ const Transactions = () => {
 
   const [open, setOpen] = useState(false);
   const [rate, setRate] = useState("");
-  const [Showrate, setShowrate] = useState()
-const fetchRate = async () => {
-  try {
-    const response = await axios.get(
-      "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getrate"
-    );
-    setShowrate(response.data.rate);
-  } catch (error) {
-    console.error("Error fetching rate:", error);
-  }
-};
+  const [Showrate, setShowrate] = useState();
+
+  const fetchRate = async () => {
+    try {
+      const response = await axios.get(
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getrate"
+      );
+      setShowrate(response.data.rate);
+    } catch (error) {
+      console.error("Error fetching rate:", error);
+    }
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -349,17 +425,30 @@ const fetchRate = async () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post("https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/ManageRates", {
-        rate,
-      });
+      const response = await axios.post(
+        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/ManageRates",
+        {
+          rate,
+        }
+      );
       console.log("Rate created successfully:", response.data);
       handleClose();
-      setRate("")
+      setRate("");
       fetchRate();
     } catch (error) {
       console.error("Error creating rate:", error);
     }
   };
+
+  // Pagination handling
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+
+  const displayedTransactions = transactionsData.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
 
   if (verifying) {
     return (
@@ -459,7 +548,7 @@ const fetchRate = async () => {
                       </TableCell>
                     </TableRow>
                   ))
-                : transactionsData.map((transaction) => (
+                : displayedTransactions.map((transaction) => (
                     <TableRow key={transaction._id}>
                       <TableCell>{transaction._id}</TableCell>
                       <TableCell>{transaction.amount}</TableCell>
@@ -489,6 +578,16 @@ const fetchRate = async () => {
             </TableBody>
           </Table>
         </TableContainer>
+        {/* Add Pagination component here */}
+        <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+          <Pagination
+            count={Math.ceil(transactionsData.length / itemsPerPage)}
+            page={page}
+            onChange={handlePageChange}
+            variant="outlined"
+            shape="rounded"
+          />
+        </Box>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Manage Rate</DialogTitle>
           <DialogContent>

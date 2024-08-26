@@ -38,6 +38,7 @@ const Location = () => {
     city: "",
     state: "",
     country_code: "",
+    Street:"",
     zip: "",
     latitude: 15,
     longitude: 16,
@@ -51,6 +52,7 @@ const Location = () => {
     city: "",
     state: "",
     country_code: "",
+    Street: "",
     zip: "",
     latitude: 15,
     longitude: 16,
@@ -60,7 +62,7 @@ const Location = () => {
   const fetchLocations = async () => {
     try {
       const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details"
+        "http://localhost:4000/api/location/details"
       );
       const locationsData = response.data.data;
       setLocations(locationsData);
@@ -106,7 +108,7 @@ const Location = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/create",
+        "http://localhost:4000/api/location/create",
         formData
       );
       setLocations([...locations, response.data]);
@@ -117,6 +119,7 @@ const Location = () => {
         state: "",
         country_code: "",
         zip: "",
+        Street: "",
         latitude: 15,
         longitude: 16,
       });
@@ -242,6 +245,7 @@ const Location = () => {
       zip: location.zip,
       latitude: location.latitude,
       longitude: location.longitude,
+      Street: location.Street,
     });
     setEditModalOpen(true);
   };
@@ -342,7 +346,7 @@ const Location = () => {
                   <Typography variant="h6">{location.name}</Typography>
 
                   <Typography variant="body2" color="textSecondary">
-                    {`${location.city}, ${location.state}, ${location.zip}`}
+                    {`${location.Street}, ${location.city}, ${location.state}, ${location.zip}`}
                   </Typography>
                   <Box
                     sx={{
@@ -437,9 +441,9 @@ const Location = () => {
                   className="New"
                   required
                   fullWidth
-                  label="City"
-                  name="city"
-                  value={formData.city}
+                  label="Street"
+                  name="Street"
+                  value={formData.Street}
                   onChange={handleInputChange}
                 />
               </Stack>
@@ -449,9 +453,9 @@ const Location = () => {
                   className="New"
                   required
                   fullWidth
-                  label="Province"
-                  name="state"
-                  value={formData.state}
+                  label="City"
+                  name="city"
+                  value={formData.city}
                   onChange={handleInputChange}
                 />
                 <TextField
@@ -459,9 +463,9 @@ const Location = () => {
                   className="New"
                   required
                   fullWidth
-                  label="Country"
-                  name="country_code"
-                  value={formData.country_code}
+                  label="Province"
+                  name="state"
+                  value={formData.state}
                   onChange={handleInputChange}
                 />
               </Stack>
@@ -474,6 +478,16 @@ const Location = () => {
                   label="ZIP"
                   name="zip"
                   value={formData.zip}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  margin="normal"
+                  className="New"
+                  required
+                  fullWidth
+                  label="Country"
+                  name="country_code"
+                  value={formData.country_code}
                   onChange={handleInputChange}
                 />
               </Stack>

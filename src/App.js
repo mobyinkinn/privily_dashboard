@@ -706,7 +706,12 @@ const routes = [
   { id: 6, path: "/booking", element: <Booking />, name: "Booking" },
   { id: 7, path: "/location", element: <Location />, name: "Location" },
   { id: 8, path: "/assign-role", element: <AssignRole />, name: "Assign Role" },
-  { id: 9, path: "/Vip-booking", element: <VipBooking />, name: "VipBooking" },
+  {
+    id: 9,
+    path: "/corporate-booking",
+    element: <VipBooking />,
+    name: "Corporate Booking",
+  },
 ];
 
 function App() {

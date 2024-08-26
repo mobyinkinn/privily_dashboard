@@ -698,7 +698,7 @@ const handleSubmit = async (event) => {
             }}
           >
             <Typography id="confirm-modal-title" variant="h6" component="h2">
-              Are you sure you want to delete this user?
+              Are you sure you want to delete this Pod?
             </Typography>
             <Button onClick={confirmDelete} sx={{ mt: 2, mr: 2 }}>
               Yes
@@ -869,7 +869,7 @@ const handleSubmit = async (event) => {
                   required
                   style={{ width: "50%" }}
                   fullWidth
-                  label="Location"
+                  label="Google Maps Link"
                   name="direction"
                   value={formData.direction}
                   onChange={handleInputChange}

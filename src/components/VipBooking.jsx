@@ -717,7 +717,7 @@ const handleBookNow = debounce(async () => {
         fontWeight={"bold"}
         sx={{ marginBottom: 2, color: "#ED3327" }}
       >
-        VIP Booking
+        Corporate Booking
       </Typography>
 
       <div style={styles.field}>
