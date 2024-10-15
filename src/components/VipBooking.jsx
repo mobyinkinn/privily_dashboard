@@ -36,11 +36,11 @@
 //   const fetchPods = async () => {
 //     try {
 //       const response = await axios.get(
-//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
+//         "http://localhost:4000/api/product/getall",
 //         {
 //           headers: {
 //             Authorization:
-//               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
+//               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTJjYjRmZWRjZmU3M2U2N2U4NGY0MSIsImlhdCI6MTcyNjEzOTk0OCwiZXhwIjoxNzM0Nzc5OTQ4fQ.Uy0EDbnQ1clGLvZBjtPFhjQjx0PqngDsYLj2hUkBEQ4",
 //           },
 //         }
 //       );
@@ -58,7 +58,7 @@
 //     try {
 //       const formattedDate = moment(date).format("YYYY-MM-DD");
 //       const response = await axios.get(
-//         `https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
+//         `http://localhost:4000/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
 //       );
 //       const { product_availability } = response.data;
 //       setBookedSlots(product_availability.slot_bookings);
@@ -102,7 +102,7 @@
 //   const fetchRate = async () => {
 //     try {
 //       const response = await axios.get(
-//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getrate"
+//         "http://localhost:4000/api/transactions/getrate"
 //       );
 //       setRate(response.data.rate);
 //     } catch (error) {
@@ -146,7 +146,7 @@
 
 //         try {
 //           const response = await axios.post(
-//             "https://hammerhead-app-lqsdj.ondigitalocean.app/api/payments",
+//             "http://localhost:4000/api/payments",
 //             {
 //               amount: amount,
 //               currency: "ZAR",
@@ -464,10 +464,10 @@ const VipBooking = () => {
   const fetchPods = async () => {
     try {
       const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
+        "http://localhost:4000/api/product/getall",
         {
           headers: {
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTJjYjRmZWRjZmU3M2U2N2U4NGY0MSIsImlhdCI6MTcyNjEzOTk0OCwiZXhwIjoxNzM0Nzc5OTQ4fQ.Uy0EDbnQ1clGLvZBjtPFhjQjx0PqngDsYLj2hUkBEQ4',
           },
         }
       );
@@ -485,7 +485,7 @@ const VipBooking = () => {
     try {
       const formattedDate = moment(date).format("YYYY-MM-DD");
       const response = await axios.get(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
+        `http://localhost:4000/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
       );
       const { product_availability } = response.data;
       setBookedSlots(product_availability.slot_bookings);
@@ -636,12 +636,12 @@ const handleBookNow = debounce(async () => {
   const createBooking = async (slugs, bookingDetails) => {
     try {
       const response = await axios.post(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/create-booking/${slugs}`,
+        `http://localhost:4000/api/user/create-booking/${slugs}`,
         bookingDetails,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTJjYjRmZWRjZmU3M2U2N2U4NGY0MSIsImlhdCI6MTcyNjEzOTk0OCwiZXhwIjoxNzM0Nzc5OTQ4fQ.Uy0EDbnQ1clGLvZBjtPFhjQjx0PqngDsYLj2hUkBEQ4`,
           },
         }
       );

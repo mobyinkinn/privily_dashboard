@@ -52,7 +52,7 @@
 //   const fetchData = async () => {
 //     try {
 //       const response = await axios.get(
-//         `https://hammerhead-app-lqsdj.ondigitalocean.app/api/dashboard/${
+//         `http://localhost:4000/api/dashboard/${
 //           auth?.user?._id || ""
 //         }`
 //       );
@@ -276,7 +276,7 @@
 //                 > */}
 //                   {d.images && d.images.length > 0 && (
 //                     <img
-//                       src={`https://hammerhead-app-lqsdj.ondigitalocean.app${d.images[0].url}`}
+//                       src={`http://localhost:4000${d.images[0].url}`}
 //                       className="Images-correct"
 //                       style={{
 //                         width: "100%",
@@ -469,7 +469,7 @@
 //      }
 
 //      const response = await axios.get(
-//        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/dashboard/${userId}`
+//        `http://localhost:4000/api/dashboard/${userId}`
 //      );
 
 //      const Alldata = response.data.data;
@@ -591,7 +591,7 @@ const Dashboard = () => {
       }
 
       const response = await axios.get(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/dashboard/${userId}`
+        `http://localhost:4000/api/dashboard/${userId}`
       );
 
       const Alldata = response.data.data;

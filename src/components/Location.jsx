@@ -33,6 +33,7 @@ const Location = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState(null);
+  const getToken = localStorage.getItem("token");
   const [formData, setFormData] = useState({
     name: "",
     city: "",
@@ -131,8 +132,8 @@ const Location = () => {
 
   // const handleSwitchToggle = async (locationId, isBlocked) => {
   //   const url = isBlocked
-  //     ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/unblock-Location/${locationId}`
-  //     : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/block-Location/${locationId}`;
+  //     ? `http://localhost:4000/api/location/unblock-Location/${locationId}`
+  //     : `http://localhost:4000/api/location/block-Location/${locationId}`;
 
   //   try {
   //     await axios.put(url, null, {
@@ -150,7 +151,7 @@ const Location = () => {
 
   //     // Refetch the locations to get the updated status
   //     const response = await axios.get(
-  //       "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details"
+  //       "http://localhost:4000/api/location/details"
   //     );
   //     const locationsData = response.data.data;
   //     setLocations(locationsData);
@@ -167,14 +168,13 @@ const Location = () => {
   const handleSwitchToggle = async (locationId, isUnblocked) => {
     // Renamed parameter for clarity
     const url = isUnblocked
-      ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/block-Location/${locationId}` // Reverse the URLs
-      : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/unblock-Location/${locationId}`;
+      ? `http://localhost:4000/api/location/block-Location/${locationId}` // Reverse the URLs
+      : `http://localhost:4000/api/location/unblock-Location/${locationId}`;
 
     try {
       await axios.put(url, null, {
         headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo", // Replace with actual bearer token
+          Authorization: `Bearer ${getToken}`,
         },
       });
 
@@ -186,7 +186,7 @@ const Location = () => {
 
       // Refetch the locations to get the updated status
       const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details"
+        "http://localhost:4000/api/location/details"
       );
       const locationsData = response.data.data;
       setLocations(locationsData);
@@ -208,11 +208,10 @@ const Location = () => {
   const handleDeleteLocation = async () => {
     try {
       await axios.delete(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/delete-Location/${deleteUserId}`,
+        `http://localhost:4000/api/location/delete-Location/${deleteUserId}`,
         {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
+            Authorization: `Bearer ${getToken}`,
           },
         }
       );
@@ -264,12 +263,11 @@ const Location = () => {
     event.preventDefault();
     try {
       const response = await axios.put(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/edit-location/${currentLocation._id}`,
+        `http://localhost:4000/api/location/edit-location/${currentLocation._id}`,
         { ...editFormData, isBlocked: currentLocation.isBlocked }, // Include isBlocked status
         {
           headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
+            Authorization: `Bearer ${getToken}`,
           },
         }
       );
@@ -335,13 +333,8 @@ const Location = () => {
         <Grid container spacing={3} pt={2}>
           {displayedLocations.map((location) => (
             <Grid item xs={12} sm={6} md={4} key={location._id}>
-              <Card>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image="https://via.placeholder.com/150" // Replace with actual image URL if available
-                  alt={location.name}
-                />
+              <Stack boxShadow={"1px 1px 1px 1px #000"}>
+               
                 <CardContent>
                   <Typography variant="h6">{location.name}</Typography>
 
@@ -385,7 +378,7 @@ const Location = () => {
                     </IconButton>
                   </Box>
                 </CardContent>
-              </Card>
+              </Stack>
             </Grid>
           ))}
         </Grid>
@@ -564,13 +557,24 @@ const Location = () => {
                   className="New"
                   required
                   fullWidth
+                  label="Street"
+                  name="Street"
+                  value={editFormData.Street}
+                  onChange={handleEditInputChange}
+                />
+              </Stack>
+
+              <Stack direction={"row"} gap={2}>
+                <TextField
+                  margin="normal"
+                  className="New"
+                  required
+                  fullWidth
                   label="City"
                   name="city"
                   value={editFormData.city}
                   onChange={handleEditInputChange}
                 />
-              </Stack>
-              <Stack direction={"row"} gap={2}>
                 <TextField
                   margin="normal"
                   className="New"
@@ -581,6 +585,8 @@ const Location = () => {
                   value={editFormData.state}
                   onChange={handleEditInputChange}
                 />
+              </Stack>
+              <Stack direction={"row"} gap={2}>
                 <TextField
                   margin="normal"
                   className="New"
@@ -591,8 +597,6 @@ const Location = () => {
                   value={editFormData.country_code}
                   onChange={handleEditInputChange}
                 />
-              </Stack>
-              <Stack direction={"row"} gap={2}>
                 <TextField
                   margin="normal"
                   className="New"

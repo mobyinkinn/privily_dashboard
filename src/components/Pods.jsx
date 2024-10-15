@@ -31,10 +31,20 @@ import NoAccess from "./NoAccess.jsx";
 import axios from "axios";
 import CloseIcon from "@mui/icons-material/Close";
 import { CSVLink } from "react-csv";
-
+import {
+  fetchPodsData,
+  fetchLocations,
+  fetchFeatures,
+  uploadImages,
+  createPod,
+  editPod,
+  blockPod,
+  unblockPod,
+  deletePod,
+} from "../api/api.js";
 const Pods = () => {
   const [podsData, setPodsData] = useState([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
   const [locations, setLocations] = useState([]);
@@ -46,12 +56,11 @@ const Pods = () => {
   const [imageUrls, setImageUrls] = useState([]);
   const [alertOpen, setAlertOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [editFeatureName, setEditFeatureName] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-  const [deleteUserId, setDeleteUserId] = useState(null);
-  const [currentLocation, setCurrentLocation] = useState(null);
+  const [deletePodId, setDeletePodId] = useState(null);
+  const [currentPod, setCurrentPod] = useState(null);
   const [verifying, setVerifying] = useState(true);
   const [errors, setErrors] = useState({
     location: false,
@@ -78,6 +87,7 @@ const Pods = () => {
     booking_requirements: "",
     availability: "",
     cancellation_policy: "",
+    safety_and_property: "",
   });
   const [editFormData, setEditFormData] = useState({
     deviceId: "",
@@ -87,6 +97,7 @@ const Pods = () => {
     direction: "",
     booking_requirements: "",
     cancellation_policy: "",
+    safety_and_property: "",
     availability: "",
     isBlocked: false,
     location: "",
@@ -97,21 +108,13 @@ const Pods = () => {
     images: [],
     tags: "",
   });
-  const token = localStorage.getItem("token");
-  console.log("token", token);
-  const fetchPodsData = async () => {
+  const { verifyUser } = useAuth();
+
+  // Fetch pods data using API function
+  const loadPodsData = async () => {
     try {
-      const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/getall",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      
-      setPodsData(response.data);
+      const data = await fetchPodsData();
+      setPodsData(data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data: ", error);
@@ -119,19 +122,11 @@ const Pods = () => {
     }
   };
 
-
-  const fetchLocations = async () => {
+  // Fetch locations
+  const loadLocations = async () => {
     try {
-      const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/details",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      const filteredLocations = response.data.data.filter(
+      const response = await fetchLocations();
+      const filteredLocations = response.data.filter(
         (location) => !location.isBlocked
       );
       setLocations(filteredLocations);
@@ -139,22 +134,12 @@ const Pods = () => {
       console.error("Error fetching locations: ", error);
     }
   };
- 
 
-  const fetchFeatures = async () => {
+  // Fetch features
+  const loadFeatures = async () => {
     try {
-      const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/location/features",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      const filteredFeatures = response.data.filter(
-        (Features) => !Features.isBlocked
-      );
+      const data = await fetchFeatures();
+      const filteredFeatures = data.filter((feature) => !feature.isBlocked);
       setFeatures(filteredFeatures);
     } catch (error) {
       console.error("Error fetching features: ", error);
@@ -162,8 +147,8 @@ const Pods = () => {
   };
 
   const handleOpen = () => {
-    fetchLocations();
-    fetchFeatures();
+    loadLocations();
+    loadFeatures();
     setOpen(true);
   };
 
@@ -190,13 +175,14 @@ const Pods = () => {
       booking_requirements: "",
       availability: "",
       cancellation_policy: "",
+      safety_and_property: "",
     });
     setSelectedFeatures([]);
     setSelectedLocation("");
     setImages([]);
     setImageUrls([]);
   };
-  const { verifyUser } = useAuth();
+
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -222,35 +208,21 @@ const Pods = () => {
   };
 
   const handleImageUpload = async () => {
-    const uploadedUrls = [];
-    for (const image of images) {
-      const formData = new FormData();
-      formData.append("images", image);
-      try {
-        const response = await axios.post(
-          "https://hammerhead-app-lqsdj.ondigitalocean.app/api/upload",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-            },
-          }
-        );
-        uploadedUrls.push(response.data.files[0].url);
-      } catch (error) {
-        console.error("Error uploading image: ", error);
-      }
+    try {
+      const files = Array.from(images);
+      const response = await uploadImages(files);
+      const uploadedUrls = response.files.map((file) => file.url);
+      setImageUrls(uploadedUrls);
+      return uploadedUrls;
+    } catch (error) {
+      console.error("Error uploading images: ", error);
     }
-    setImageUrls(uploadedUrls);
-    return uploadedUrls;
   };
 
   const handleEditIconClick = (product) => {
-    setCurrentLocation(product);
-    fetchLocations();
-    fetchFeatures();
+    setCurrentPod(product);
+    loadLocations();
+    loadFeatures();
     setEditFormData({
       UserId: product.UserId || "",
       deviceId: product.deviceId,
@@ -260,9 +232,10 @@ const Pods = () => {
       direction: product.direction,
       booking_requirements: product.booking_requirements,
       cancellation_policy: product.cancellation_policy,
+      safety_and_property: product.safety_and_property,
       availability: product.availability,
       isBlocked: product.isBlocked,
-      location: product.location._id, // Use an empty string if location is undefined
+      location: product.location._id,
       features: product.features.map((feature) => feature._id),
       category: product.category,
       timeSlot: product.timeSlot,
@@ -273,7 +246,6 @@ const Pods = () => {
     setEditModalOpen(true);
   };
 
-  // Handle input change for editing location
   const handleEditInputChange = (event) => {
     const { name, value } = event.target;
     setEditFormData({
@@ -281,15 +253,14 @@ const Pods = () => {
       [name]: value,
     });
   };
+
   const handleEditImageChange = (event) => {
     const files = event.target.files;
     setEditFormData({
       ...editFormData,
-      images: files, // Store the selected files directly in editFormData
+      images: files,
     });
   };
-  // Handle submit for editing location
-  // Modify the handleEditSubmit function to upload images and update the form data
 
   const handleEditSubmit = async (event) => {
     event.preventDefault();
@@ -301,24 +272,10 @@ const Pods = () => {
       editFormData.images[0] instanceof File
     ) {
       // If new images are uploaded, handle their upload
-      const formData = new FormData();
-      Array.from(editFormData.images).forEach((image) => {
-        formData.append("images", image);
-      });
-
       try {
-        const uploadResponse = await axios.post(
-          "https://hammerhead-app-lqsdj.ondigitalocean.app/api/upload", // Adjust the upload URL if needed
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization:
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-            },
-          }
-        );
-        uploadedUrls = uploadResponse.data.files.map((file) => ({
+        const files = Array.from(editFormData.images);
+        const uploadResponse = await uploadImages(files);
+        uploadedUrls = uploadResponse.files.map((file) => ({
           public_id: "image",
           url: file.url,
         }));
@@ -326,160 +283,104 @@ const Pods = () => {
         console.error("Error uploading images:", error);
         return;
       }
+    } else {
+      // If images are URLs, format them appropriately
+      uploadedUrls = uploadedUrls.map((url) => ({
+        public_id: "image",
+        url,
+      }));
     }
 
     try {
-      const response = await axios.put(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/edit-pods/${currentLocation._id}`,
-        {
-          ...editFormData,
-          images: uploadedUrls, // Update images with the new URLs
-        },
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      console.log("Pod updated successfully:", response.data);
+      const response = await editPod(currentPod._id, {
+        ...editFormData,
+        images: uploadedUrls,
+      });
+      console.log("Pod updated successfully:", response);
       setEditModalOpen(false);
-      fetchPodsData();
+      loadPodsData();
     } catch (error) {
       console.error("Error updating pod:", error);
       setError("Error updating pod");
     }
   };
-const handleSubmit = async (event) => {
-  event.preventDefault();
 
-  // Validate required fields
-  const hasError = {
-    location: !selectedLocation,
-    features: selectedFeatures.length === 0,
-    images: images.length === 0,
-  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  setErrors(hasError);
+    const hasError = {
+      location: !selectedLocation,
+      features: selectedFeatures.length === 0,
+      images: images.length === 0,
+    };
 
-  // Check if there are any errors
-  if (Object.values(hasError).some((error) => error)) {
-    return; // Do not proceed if there are validation errors
-  }
+    setErrors(hasError);
 
-  const uploadedUrls = await handleImageUpload();
-  const payload = {
-    ...formData,
-    location: selectedLocation,
-    features: selectedFeatures,
-    images: uploadedUrls.map((url) => ({ public_id: "image", url })),
-  };
-
-  try {
-    const response = await axios.post(
-      "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
-      payload,
-      {
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-        },
-      }
-    );
-    if (response.status === 200) {
-      setAlertOpen(true);
+    if (Object.values(hasError).some((error) => error)) {
+      return;
     }
-    handleClose();
-    fetchPodsData();
-  } catch (error) {
-    console.error("Error creating pod: ", error);
-    setError("Error creating pod");
-  }
-};
 
-  // const handleSubmit = async (event) => {
-  //   event.preventDefault();
-  //   const uploadedUrls = await handleImageUpload();
-  //   const payload = {
-  //     ...formData,
-  //     location: selectedLocation,
-  //     features: selectedFeatures,
-  //     images: uploadedUrls.map((url) => ({ public_id: "image", url })),
-  //   };
-  //   try {
-  //     const response = await axios.post(
-  //       "https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/create-pods",
-  //       payload,
-  //       {
-  //         headers: {
-  //           Authorization:
-  //             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-  //         },
-  //       }
-  //     );
-  //     if (response.status === 200) {
-  //       setAlertOpen(true);
-  //     }
-  //     handleClose();
-  //     fetchPodsData();
-  //   } catch (error) {
-  //     console.error("Error creating pod: ", error);
-  //     setError("Error creating pod");
-  //   }
-  // };
-  const handleBlockUnblockUser = async (userId, isBlocked) => {
+    const uploadedUrls = await handleImageUpload();
+    const payload = {
+      ...formData,
+      location: selectedLocation,
+      features: selectedFeatures,
+      images: uploadedUrls.map((url) => ({ public_id: "image", url })),
+    };
+
     try {
-      const url = isBlocked
-        ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/unblock-pods/${userId}`
-        : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/block-pods/${userId}`;
-      const response = await axios.put(
-        url,
-        {},
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      setModalMessage(response.data.message);
+      const response = await createPod(payload);
+      if (response) {
+        setAlertOpen(true);
+      }
+      handleClose();
+      loadPodsData();
+    } catch (error) {
+      console.error("Error creating pod: ", error);
+      setError("Error creating pod");
+    }
+  };
+
+  const handleBlockUnblockPod = async (podId, isBlocked) => {
+    try {
+      let response;
+      if (isBlocked) {
+        response = await unblockPod(podId);
+      } else {
+        response = await blockPod(podId);
+      }
+      setModalMessage(response.message || "Operation successful");
       setModalOpen(true);
-      fetchPodsData(); // Refresh the user data
+      loadPodsData();
     } catch (error) {
       console.error(
-        `Error ${isBlocked ? "unblocking" : "blocking"} user: `,
+        `Error ${isBlocked ? "unblocking" : "blocking"} pod: `,
         error
       );
     }
   };
-  const handleDeleteUser = async () => {
+
+  const handleDeletePod = async () => {
     try {
-      await axios.delete(
-        `https://hammerhead-app-lqsdj.ondigitalocean.app/api/product/delete-pods/${deleteUserId}`,
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      setModalMessage("User deleted successfully");
+      const response = await deletePod(deletePodId);
+      setModalMessage("Pod deleted successfully");
       setModalOpen(true);
       setConfirmModalOpen(false);
-      fetchPodsData(); // Refresh the user data
+      loadPodsData();
     } catch (error) {
-      console.error("Error deleting user: ", error);
+      console.error("Error deleting pod: ", error);
     }
   };
 
-  const handleConfirmDelete = (userId) => {
-    setDeleteUserId(userId);
+  const handleConfirmDelete = (podId) => {
+    setDeletePodId(podId);
     setConfirmModalOpen(true);
   };
 
   const confirmDelete = () => {
-    handleDeleteUser();
+    handleDeletePod();
   };
+
   useEffect(() => {
     const effect = async () => {
       setVerifying(true);
@@ -487,11 +388,12 @@ const handleSubmit = async (event) => {
       setUserVerified(res);
       setVerifying(false);
       if (res) {
-        fetchPodsData();
+        loadPodsData();
       }
     };
     effect();
   }, []);
+
   const headers = [
     { label: "Booking Id", key: "podId" },
     { label: "Booking Date", key: "bookingDate" },
@@ -605,7 +507,7 @@ const handleSubmit = async (event) => {
                         {pod.images && pod.images.length > 0 && (
                           <img
                             key={pod.images[0]._id}
-                            src={`https://hammerhead-app-lqsdj.ondigitalocean.app${pod.images[0].url}`}
+                            src={`http://localhost:4000${pod.images[0].url}`}
                             alt=""
                             style={{ width: "50px", height: "50px" }}
                           />
@@ -628,7 +530,7 @@ const handleSubmit = async (event) => {
                       <TableCell>
                         <IconButton
                           onClick={() =>
-                            handleBlockUnblockUser(pod._id, pod.isBlocked)
+                            handleBlockUnblockPod(pod._id, pod.isBlocked)
                           }
                         >
                           {pod.isBlocked === false ? (
@@ -853,7 +755,6 @@ const handleSubmit = async (event) => {
               </Stack>
               <Stack direction={"row"} gap={2}>
                 <input type="file" multiple onChange={handleImageChange} />
-                
               </Stack>
 
               <Stack direction={"row"} gap={2}>
@@ -894,6 +795,15 @@ const handleSubmit = async (event) => {
                   onChange={handleInputChange}
                 />
               </Stack>
+              <TextField
+                style={{ width: "50%" }}
+                required
+                fullWidth
+                label="Safety and Property"
+                name="safety_and_property"
+                value={formData.safety_and_property}
+                onChange={handleInputChange}
+              />
               <Box
                 sx={{ mt: 2 }}
                 display={"flex"}
@@ -1076,34 +986,25 @@ const handleSubmit = async (event) => {
               </Stack>
               <Stack direction={"row"} gap={2}>
                 <TextField
-                  style={{ width: "50%" }}
                   required
                   fullWidth
-                  label="Location"
-                  name="direction"
-                  value={editFormData.direction}
-                  onChange={handleEditInputChange}
-                />
-                <TextField
                   style={{ width: "50%" }}
-                  required
-                  fullWidth
                   label="Booking Requirements"
                   name="booking_requirements"
                   value={editFormData.booking_requirements}
                   onChange={handleEditInputChange}
                 />
-              </Stack>
-              <Stack direction={"row"} gap={2}>
                 <TextField
-                  style={{ width: "50%" }}
                   required
+                  style={{ width: "50%" }}
                   fullWidth
-                  label="Cancellation Policy"
-                  name="cancellation_policy"
-                  value={editFormData.cancellation_policy}
+                  label="Google Maps Link"
+                  name="direction"
+                  value={editFormData.direction}
                   onChange={handleEditInputChange}
                 />
+              </Stack>
+              <Stack direction={"row"} gap={2}>
                 <TextField
                   required
                   style={{ width: "50%" }}
@@ -1113,7 +1014,25 @@ const handleSubmit = async (event) => {
                   value={editFormData.availability}
                   onChange={handleEditInputChange}
                 />
+                <TextField
+                  style={{ width: "50%" }}
+                  required
+                  fullWidth
+                  label="Cancellation Policy"
+                  name="cancellation_policy"
+                  value={editFormData.cancellation_policy}
+                  onChange={handleEditInputChange}
+                />
               </Stack>
+              <TextField
+                style={{ width: "50%" }}
+                required
+                fullWidth
+                label="Safety and Property"
+                name="safety_and_property"
+                value={editFormData.safety_and_property}
+                onChange={handleEditInputChange}
+              />
             </Stack>
             <Box
               sx={{ mt: 2 }}

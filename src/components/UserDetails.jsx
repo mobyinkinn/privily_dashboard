@@ -1,4 +1,139 @@
 
+// import React, { useEffect, useState } from "react";
+// import {
+//   Table,
+//   TableBody,
+//   TableCell,
+//   TableContainer,
+//   TableHead,
+//   TableRow,
+//   Paper,
+//   Button,
+//   IconButton,
+//   Typography,
+//   Stack,
+//   Modal,
+//   Box,
+//   CircularProgress,
+// } from "@mui/material";
+// import { Visibility, VisibilityOff, Delete } from "@mui/icons-material";
+// import axios from "axios";
+// import GetAppIcon from "@mui/icons-material/GetApp";
+// import AddIcon from "@mui/icons-material/Add";
+// import { CSVLink } from "react-csv";
+// import { useAuth } from "../context/Authcontext";
+// import NoAccess from "./NoAccess.jsx";
+
+// const UserDetails = () => {
+//   const [podsData, setPodsData] = useState([]);
+//   const [modalOpen, setModalOpen] = useState(false);
+//   const [modalMessage, setModalMessage] = useState("");
+//   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+//   const [deleteUserId, setDeleteUserId] = useState(null);
+//   const [userVerified, setUserVerified] = useState(false);
+//   const { verifyUser } = useAuth();
+//   const [verifying, setVerifying] = useState(true);
+
+//   useEffect(() => {
+//     const effect = async () => {
+//       setVerifying(true);
+//       let res = await verifyUser(5);
+//       setUserVerified(res);
+//       setVerifying(false);
+//       if (res) {
+//         fetchPodsData();
+//       }
+//     };
+//     effect();
+//   }, []);
+
+//   const fetchPodsData = async () => {
+//     try {
+//       const response = await axios.get(
+//         "http://localhost:4000/api/user/all-users",
+//         {
+//           headers: {
+//             Authorization:
+//               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTJjYjRmZWRjZmU3M2U2N2U4NGY0MSIsImlhdCI6MTcyNjEzOTk0OCwiZXhwIjoxNzM0Nzc5OTQ4fQ.Uy0EDbnQ1clGLvZBjtPFhjQjx0PqngDsYLj2hUkBEQ4",
+//           },
+//         }
+//       );
+//       const filteredData = response.data.filter(
+//         (user) => user.role !== "admin"
+//       );
+//       setPodsData(filteredData);
+//     } catch (error) {
+//       console.error("Error fetching data: ", error);
+//     }
+//   };
+
+//   const handleBlockUnblockUser = async (userId, isBlocked) => {
+//     try {
+//       const url = isBlocked
+//         ? `http://localhost:4000/api/user/unblock-user/${userId}`
+//         : `http://localhost:4000/api/user/block-user/${userId}`;
+//       const response = await axios.put(
+//         url,
+//         {},
+//         {
+//           headers: {
+//             Authorization:
+//               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTJjYjRmZWRjZmU3M2U2N2U4NGY0MSIsImlhdCI6MTcyNjEzOTk0OCwiZXhwIjoxNzM0Nzc5OTQ4fQ.Uy0EDbnQ1clGLvZBjtPFhjQjx0PqngDsYLj2hUkBEQ4",
+//           },
+//         }
+//       );
+//       setModalMessage(response.data.message);
+//       setModalOpen(true);
+//       fetchPodsData(); // Refresh the user data
+//     } catch (error) {
+//       console.error(
+//         `Error ${isBlocked ? "unblocking" : "blocking"} user: `,
+//         error
+//       );
+//     }
+//   };
+
+//   const handleDeleteUser = async () => {
+//     try {
+//       await axios.delete(`http://localhost:4000/api/user/${deleteUserId}`, {
+//         headers: {
+//           Authorization:
+//             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTJjYjRmZWRjZmU3M2U2N2U4NGY0MSIsImlhdCI6MTcyNjEzOTk0OCwiZXhwIjoxNzM0Nzc5OTQ4fQ.Uy0EDbnQ1clGLvZBjtPFhjQjx0PqngDsYLj2hUkBEQ4",
+//         },
+//       });
+//       setModalMessage("User deleted successfully");
+//       setModalOpen(true);
+//       setConfirmModalOpen(false);
+//       fetchPodsData(); // Refresh the user data
+//     } catch (error) {
+//       console.error("Error deleting user: ", error);
+//     }
+//   };
+
+//   const handleConfirmDelete = (userId) => {
+//     setDeleteUserId(userId);
+//     setConfirmModalOpen(true);
+//   };
+
+//   const confirmDelete = () => {
+//     handleDeleteUser();
+//   };
+
+//   const headers = [
+//     { label: "User Id", key: "podId" },
+//     { label: "Booking Date", key: "bookingDate" },
+//     { label: "Booking Purpose", key: "bookingPurpose" },
+//     { label: "Start Time", key: "startTime" },
+//     { label: "End Time", key: "endTime" },
+//     { label: "Status", key: "status" },
+//   ];
+
+//   const csvReport = {
+//     filename: "User_Bookings_Report.csv",
+//     headers: headers,
+//     data: podsData,
+//   };
+
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -17,12 +152,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Visibility, VisibilityOff, Delete } from "@mui/icons-material";
-import axios from "axios";
-import GetAppIcon from "@mui/icons-material/GetApp";
-import AddIcon from "@mui/icons-material/Add";
 import { CSVLink } from "react-csv";
 import { useAuth } from "../context/Authcontext";
 import NoAccess from "./NoAccess.jsx";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import AddIcon from "@mui/icons-material/Add";
+import { fetchAllUsers, blockUser, unblockUser, deleteUser } from "../api/api.js"; // Importing the APIs
 
 const UserDetails = () => {
   const [podsData, setPodsData] = useState([]);
@@ -49,19 +184,9 @@ const UserDetails = () => {
 
   const fetchPodsData = async () => {
     try {
-      const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-users",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      const filteredData = response.data.filter(
-        (user) => user.role !== "admin"
-      );
-      setPodsData(filteredData);
+      const data = await fetchAllUsers();
+      // const filteredData = data.filter((user) => user.role !== "admin");
+      setPodsData(data);
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
@@ -69,20 +194,10 @@ const UserDetails = () => {
 
   const handleBlockUnblockUser = async (userId, isBlocked) => {
     try {
-      const url = isBlocked
-        ? `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/unblock-user/${userId}`
-        : `https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/block-user/${userId}`;
-      const response = await axios.put(
-        url,
-        {},
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      setModalMessage(response.data.message);
+      const response = isBlocked
+        ? await unblockUser(userId)
+        : await blockUser(userId);
+      setModalMessage(response.message);
       setModalOpen(true);
       fetchPodsData(); // Refresh the user data
     } catch (error) {
@@ -95,12 +210,7 @@ const UserDetails = () => {
 
   const handleDeleteUser = async () => {
     try {
-      await axios.delete(`https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/${deleteUserId}`, {
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-        },
-      });
+      const response = await deleteUser(deleteUserId);
       setModalMessage("User deleted successfully");
       setModalOpen(true);
       setConfirmModalOpen(false);
@@ -133,20 +243,9 @@ const UserDetails = () => {
     headers: headers,
     data: podsData,
   };
- if (verifying) {
-   return (
-     <Box
-       sx={{
-         display: "flex",
-         justifyContent: "center",
-         alignItems: "center",
-         height: "100vh",
-       }}
-     >
-       <CircularProgress />
-     </Box>
-   );
- }
+
+
+ 
   if (!userVerified) {
     return <NoAccess />;
   } else {
@@ -172,10 +271,7 @@ const UserDetails = () => {
                 },
               }}
             >
-              All Pods ({podsData.length})
-            </Button>
-            <Button variant="outlined" startIcon={<AddIcon />}>
-              Add Pods
+              All Users ({podsData.length})
             </Button>
           </Stack>
           <Stack direction={"row"} spacing={2}>

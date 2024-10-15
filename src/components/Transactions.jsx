@@ -39,7 +39,7 @@
 //   const fetchTransactionsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getalltransactions",
+//         "http://localhost:4000/api/transactions/getalltransactions",
 //         {
 //           headers: {
 //             Authorization:
@@ -104,7 +104,7 @@
 // const fetchRate = async () => {
 //   try {
 //     const response = await axios.get(
-//       "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getrate"
+//       "http://localhost:4000/api/transactions/getrate"
 //     );
 //     setShowrate(response.data.rate);
 //   } catch (error) {
@@ -122,7 +122,7 @@
 
 //   const handleSubmit = async () => {
 //     try {
-//       const response = await axios.post("https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/ManageRates", {
+//       const response = await axios.post("http://localhost:4000/api/transactions/ManageRates", {
 //         rate,
 //       });
 //       console.log("Rate created successfully:", response.data);
@@ -325,9 +325,8 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import { useAuth } from "../context/Authcontext";
 import NoAccess from "./NoAccess.jsx";
 import AddIcon from "@mui/icons-material/Add";
-
+import { fetchTransactionsData, fetchRate, manageRate } from "../api/api.js";
 const Transactions = () => {
-  const [newFeatureSign, setNewFeatureName] = useState("");
   const [transactionsData, setTransactionsData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [verifying, setVerifying] = useState(true);
@@ -338,117 +337,105 @@ const Transactions = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 6; // Number of items per page
 
-  const fetchTransactionsData = async () => {
-    try {
-      const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getalltransactions",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3Mjg4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      setTransactionsData(response.data.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data: ", error);
-      setLoading(false);
-    }
-  };
+ const [open, setOpen] = useState(false);
+ const [rate, setRate] = useState("");
+ const [showRate, setShowRate] = useState();
 
-  useEffect(() => {
-    fetchRate();
-    const effect = async () => {
-      setVerifying(true);
-      let res = await verifyUser(4);
-      setUserVerified(res);
-      setVerifying(false);
-      if (res) {
-        fetchTransactionsData();
-      }
-    };
-    effect();
-  }, []);
+ // Fetch transactions data using API function
+ const loadTransactionsData = async () => {
+   try {
+     const data = await fetchTransactionsData();
+     setTransactionsData(data.data);
+     setLoading(false);
+   } catch (error) {
+     console.error("Error fetching data: ", error);
+     setLoading(false);
+   }
+ };
 
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-CA", options);
-  };
+ // Fetch current rate using API function
+ const loadRate = async () => {
+   try {
+     const data = await fetchRate();
+     setShowRate(data.rate);
+   } catch (error) {
+     console.error("Error fetching rate:", error);
+   }
+ };
 
-  const formatTime = (dateString) => {
-    const options = { hour: "2-digit", minute: "2-digit" };
-    const date = new Date(dateString);
-    return date.toLocaleTimeString("en-GB", options);
-  };
+ useEffect(() => {
+   const effect = async () => {
+     setVerifying(true);
+     let res = await verifyUser(4);
+     setUserVerified(res);
+     setVerifying(false);
+     if (res) {
+       loadTransactionsData();
+       loadRate();
+     }
+   };
+   effect();
+ }, []);
 
-  const headers = [
-    { label: "Transaction Id", key: "_id" },
-    { label: "Amount", key: "amount" },
-    { label: "Currency", key: "currency" },
-    { label: "Merchant Id", key: "merchantId" },
-    { label: "Checkout Id", key: "checkoutId" },
-    { label: "Payment Facilitator", key: "paymentFacilitator" },
-    { label: "Status", key: "status" },
-    { label: "Created At", key: "createdAt" },
-  ];
+ const formatDate = (dateString) => {
+   const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+   const date = new Date(dateString);
+   return date.toLocaleDateString("en-CA", options);
+ };
 
-  const csvReport = {
-    filename: "Transactions_Report.csv",
-    headers: headers,
-    data: transactionsData,
-  };
+ const formatTime = (dateString) => {
+   const options = { hour: "2-digit", minute: "2-digit" };
+   const date = new Date(dateString);
+   return date.toLocaleTimeString("en-GB", options);
+ };
 
-  const [open, setOpen] = useState(false);
-  const [rate, setRate] = useState("");
-  const [Showrate, setShowrate] = useState();
+ const headers = [
+   { label: "Transaction Id", key: "_id" },
+   { label: "Amount", key: "amount" },
+   { label: "Currency", key: "currency" },
+   { label: "Merchant Id", key: "merchantId" },
+   { label: "Checkout Id", key: "checkoutId" },
+   { label: "Payment Facilitator", key: "paymentFacilitator" },
+   { label: "Status", key: "status" },
+   { label: "Created At", key: "createdAt" },
+ ];
 
-  const fetchRate = async () => {
-    try {
-      const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/getrate"
-      );
-      setShowrate(response.data.rate);
-    } catch (error) {
-      console.error("Error fetching rate:", error);
-    }
-  };
+ const csvReport = {
+   filename: "Transactions_Report.csv",
+   headers: headers,
+   data: transactionsData,
+ };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+ const handleClickOpen = () => {
+   setOpen(true);
+ };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+ const handleClose = () => {
+   setOpen(false);
+ };
 
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/transactions/ManageRates",
-        {
-          rate,
-        }
-      );
-      console.log("Rate created successfully:", response.data);
-      handleClose();
-      setRate("");
-      fetchRate();
-    } catch (error) {
-      console.error("Error creating rate:", error);
-    }
-  };
+ // Handle rate submission using API function
+ const handleSubmit = async () => {
+   try {
+     const data = await manageRate(rate);
+     console.log("Rate created successfully:", data);
+     handleClose();
+     setRate("");
+     loadRate();
+   } catch (error) {
+     console.error("Error creating rate:", error);
+   }
+ };
 
-  // Pagination handling
-  const handlePageChange = (event, value) => {
-    setPage(value);
-  };
+ // Pagination handling
+ const handlePageChange = (event, value) => {
+   setPage(value);
+ };
 
-  const displayedTransactions = transactionsData.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
+ const displayedTransactions = transactionsData.slice(
+   (page - 1) * itemsPerPage,
+   page * itemsPerPage
+ );
 
   if (verifying) {
     return (
@@ -595,7 +582,7 @@ const Transactions = () => {
               Please enter the rate and status.
             </DialogContentText>
             <DialogContentText>
-              Your current Base price is {Showrate} ZAR.
+              Your current Base price is {showRate} ZAR.
             </DialogContentText>
             <TextField
               autoFocus

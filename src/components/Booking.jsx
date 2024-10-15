@@ -32,11 +32,11 @@
 //   const fetchPodsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-bookings",
+//         "http://localhost:4000/api/user/all-bookings",
 //         {
 //           headers: {
 //             Authorization:
-//               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
+//               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTJjYjRmZWRjZmU3M2U2N2U4NGY0MSIsImlhdCI6MTcyNjEzOTk0OCwiZXhwIjoxNzM0Nzc5OTQ4fQ.Uy0EDbnQ1clGLvZBjtPFhjQjx0PqngDsYLj2hUkBEQ4",
 //           },
 //         }
 //       );
@@ -234,7 +234,7 @@ import axios from "axios";
 import GetAppIcon from "@mui/icons-material/GetApp";
 import { useAuth } from "../context/Authcontext";
 import NoAccess from "./NoAccess.jsx";
-
+import { fetchAllBookings } from "../api/api.js";
 const Booking = () => {
   const [podsData, setPodsData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -244,28 +244,20 @@ const Booking = () => {
   const [page, setPage] = useState(1);
   const itemsPerPage = 10; // Number of items per page
 
-  const fetchPodsData = async () => {
-    try {
-      const response = await axios.get(
-        "https://hammerhead-app-lqsdj.ondigitalocean.app/api/user/all-bookings",
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NWRmZGYzMWVhNWIwZGYzNDg4ZTE2YSIsImlhdCI6MTcxODU5ODg3NiwiZXhwIjoxNzI3MjM4ODc2fQ.q_tjVSj7xDcEodeNA9hxDioyjTXJ7-IaHA0z8xs1bHo",
-          },
-        }
-      );
-      const sortedData = response.data.sort(
-        (a, b) => new Date(b.bookingDate) - new Date(a.bookingDate)
-      );
-      setPodsData(sortedData);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching data: ", error);
-      setLoading(false);
-    }
-  };
-
+ const loadBookingsData = async () => {
+   try {
+     const data = await fetchAllBookings();
+     const sortedData = data.sort(
+       (a, b) => new Date(b.bookingDate) - new Date(a.bookingDate)
+     );
+     setPodsData(sortedData);
+     setLoading(false);
+   } catch (error) {
+     console.error("Error fetching data: ", error);
+     setLoading(false);
+   }
+ };
+  
   useEffect(() => {
     const effect = async () => {
       setVerifying(true);
@@ -273,7 +265,7 @@ const Booking = () => {
       setUserVerified(res);
       setVerifying(false);
       if (res) {
-        fetchPodsData();
+        loadBookingsData();
       }
     };
     effect();
