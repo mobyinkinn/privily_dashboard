@@ -36,7 +36,7 @@
 //   const fetchPods = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/product/getall",
+//         "https://privily.co/api/product/getall",
 //         {
 //           headers: {
 //             Authorization:
@@ -58,7 +58,7 @@
 //     try {
 //       const formattedDate = moment(date).format("YYYY-MM-DD");
 //       const response = await axios.get(
-//         `http://localhost:4000/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
+//         `https://privily.co/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
 //       );
 //       const { product_availability } = response.data;
 //       setBookedSlots(product_availability.slot_bookings);
@@ -102,7 +102,7 @@
 //   const fetchRate = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/transactions/getrate"
+//         "https://privily.co/api/transactions/getrate"
 //       );
 //       setRate(response.data.rate);
 //     } catch (error) {
@@ -146,7 +146,7 @@
 
 //         try {
 //           const response = await axios.post(
-//             "http://localhost:4000/api/payments",
+//             "https://privily.co/api/payments",
 //             {
 //               amount: amount,
 //               currency: "ZAR",
@@ -464,7 +464,7 @@ const VipBooking = () => {
   const fetchPods = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/product/getall",
+        "https://privily.co/api/product/getall",
         {
           headers: {
             Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTJjYjRmZWRjZmU3M2U2N2U4NGY0MSIsImlhdCI6MTcyNjEzOTk0OCwiZXhwIjoxNzM0Nzc5OTQ4fQ.Uy0EDbnQ1clGLvZBjtPFhjQjx0PqngDsYLj2hUkBEQ4',
@@ -485,7 +485,7 @@ const VipBooking = () => {
     try {
       const formattedDate = moment(date).format("YYYY-MM-DD");
       const response = await axios.get(
-        `http://localhost:4000/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
+        `https://privily.co/api/product/availability/${selectedPodSlug}?booking_date=${formattedDate}`
       );
       const { product_availability } = response.data;
       setBookedSlots(product_availability.slot_bookings);
@@ -636,7 +636,7 @@ const handleBookNow = debounce(async () => {
   const createBooking = async (slugs, bookingDetails) => {
     try {
       const response = await axios.post(
-        `http://localhost:4000/api/user/create-booking/${slugs}`,
+        `https://privily.co/api/user/create-booking/${slugs}`,
         bookingDetails,
         {
           headers: {

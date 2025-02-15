@@ -464,7 +464,7 @@ const MenuItem = styled(Link)`
 
   svg {
     margin-right: 10px;
-    color: ${(props) => (props.active ? "#ff6f61" : "#333")};
+    color: ${(props) => (props.active ? "#fff" : "#333")};
   }
 `;
 

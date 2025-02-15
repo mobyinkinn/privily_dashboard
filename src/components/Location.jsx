@@ -63,7 +63,7 @@ const Location = () => {
   const fetchLocations = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/location/details"
+        "https://privily.co/api/location/details"
       );
       const locationsData = response.data.data;
       setLocations(locationsData);
@@ -109,7 +109,7 @@ const Location = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/location/create",
+        "https://privily.co/api/location/create",
         formData
       );
       setLocations([...locations, response.data]);
@@ -132,8 +132,8 @@ const Location = () => {
 
   // const handleSwitchToggle = async (locationId, isBlocked) => {
   //   const url = isBlocked
-  //     ? `http://localhost:4000/api/location/unblock-Location/${locationId}`
-  //     : `http://localhost:4000/api/location/block-Location/${locationId}`;
+  //     ? `https://privily.co/api/location/unblock-Location/${locationId}`
+  //     : `https://privily.co/api/location/block-Location/${locationId}`;
 
   //   try {
   //     await axios.put(url, null, {
@@ -151,7 +151,7 @@ const Location = () => {
 
   //     // Refetch the locations to get the updated status
   //     const response = await axios.get(
-  //       "http://localhost:4000/api/location/details"
+  //       "https://privily.co/api/location/details"
   //     );
   //     const locationsData = response.data.data;
   //     setLocations(locationsData);
@@ -168,8 +168,8 @@ const Location = () => {
   const handleSwitchToggle = async (locationId, isUnblocked) => {
     // Renamed parameter for clarity
     const url = isUnblocked
-      ? `http://localhost:4000/api/location/block-Location/${locationId}` // Reverse the URLs
-      : `http://localhost:4000/api/location/unblock-Location/${locationId}`;
+      ? `https://privily.co/api/location/block-Location/${locationId}` // Reverse the URLs
+      : `https://privily.co/api/location/unblock-Location/${locationId}`;
 
     try {
       await axios.put(url, null, {
@@ -186,7 +186,7 @@ const Location = () => {
 
       // Refetch the locations to get the updated status
       const response = await axios.get(
-        "http://localhost:4000/api/location/details"
+        "https://privily.co/api/location/details"
       );
       const locationsData = response.data.data;
       setLocations(locationsData);
@@ -208,7 +208,7 @@ const Location = () => {
   const handleDeleteLocation = async () => {
     try {
       await axios.delete(
-        `http://localhost:4000/api/location/delete-Location/${deleteUserId}`,
+        `https://privily.co/api/location/delete-Location/${deleteUserId}`,
         {
           headers: {
             Authorization: `Bearer ${getToken}`,
@@ -263,7 +263,7 @@ const Location = () => {
     event.preventDefault();
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/location/edit-location/${currentLocation._id}`,
+        `https://privily.co/api/location/edit-location/${currentLocation._id}`,
         { ...editFormData, isBlocked: currentLocation.isBlocked }, // Include isBlocked status
         {
           headers: {

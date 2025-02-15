@@ -50,7 +50,7 @@
 //   const fetchPodsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/user/all-users",
+//         "https://privily.co/api/user/all-users",
 //         {
 //           headers: {
 //             Authorization:
@@ -70,8 +70,8 @@
 //   const handleBlockUnblockUser = async (userId, isBlocked) => {
 //     try {
 //       const url = isBlocked
-//         ? `http://localhost:4000/api/user/unblock-user/${userId}`
-//         : `http://localhost:4000/api/user/block-user/${userId}`;
+//         ? `https://privily.co/api/user/unblock-user/${userId}`
+//         : `https://privily.co/api/user/block-user/${userId}`;
 //       const response = await axios.put(
 //         url,
 //         {},
@@ -95,7 +95,7 @@
 
 //   const handleDeleteUser = async () => {
 //     try {
-//       await axios.delete(`http://localhost:4000/api/user/${deleteUserId}`, {
+//       await axios.delete(`https://privily.co/api/user/${deleteUserId}`, {
 //         headers: {
 //           Authorization:
 //             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTJjYjRmZWRjZmU3M2U2N2U4NGY0MSIsImlhdCI6MTcyNjEzOTk0OCwiZXhwIjoxNzM0Nzc5OTQ4fQ.Uy0EDbnQ1clGLvZBjtPFhjQjx0PqngDsYLj2hUkBEQ4",

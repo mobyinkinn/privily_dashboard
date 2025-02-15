@@ -92,7 +92,7 @@ const getToken = localStorage.getItem("token");
   const fetchPodsData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:4000/api/user/all-staff",
+        "https://privily.co/api/user/all-staff",
         {
           headers: {
             Authorization:
@@ -110,8 +110,8 @@ const getToken = localStorage.getItem("token");
     console.log("userId", userId);
     try {
       const url = isBlocked
-        ? `http://localhost:4000/api/user/unblock-staff/${userId}`
-        : `http://localhost:4000/api/user/block-staff/${userId}`;
+        ? `https://privily.co/api/user/unblock-staff/${userId}`
+        : `https://privily.co/api/user/block-staff/${userId}`;
       const response = await axios.put(
         url,
         {},
@@ -135,7 +135,7 @@ const getToken = localStorage.getItem("token");
   const handleDeleteUser = async () => {
     try {
       await axios.delete(
-        `http://localhost:4000/api/user/delete-staff/${deleteUserId}`,
+        `https://privily.co/api/user/delete-staff/${deleteUserId}`,
         {
           headers: {
             Authorization: `Bearer ${getToken}`,
@@ -168,7 +168,7 @@ const getToken = localStorage.getItem("token");
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/user/register-staff",
+        "https://privily.co/api/user/register-staff",
         newStaffData,
         {
           headers: {
@@ -195,7 +195,7 @@ const getToken = localStorage.getItem("token");
  }
     try {
       const response = await axios.put(
-        `http://localhost:4000/api/user/edit-staff/${currentStaff._id}`,
+        `https://privily.co/api/user/edit-staff/${currentStaff._id}`,
         editStaffData,
         {
           headers: {

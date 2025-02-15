@@ -32,7 +32,7 @@
 //   const fetchPodsData = async () => {
 //     try {
 //       const response = await axios.get(
-//         "http://localhost:4000/api/user/all-bookings",
+//         "https://privily.co/api/user/all-bookings",
 //         {
 //           headers: {
 //             Authorization:

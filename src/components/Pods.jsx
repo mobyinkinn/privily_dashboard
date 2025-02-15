@@ -70,6 +70,8 @@ const Pods = () => {
   const [formData, setFormData] = useState({
     UserId: "",
     deviceId: "",
+    password:"",
+    serial:"",
     productId: "prod00qd",
     title: "",
     description: "",
@@ -90,7 +92,10 @@ const Pods = () => {
     safety_and_property: "",
   });
   const [editFormData, setEditFormData] = useState({
+    UserId: "",
     deviceId: "",
+    password: "",
+    serial: "",
     title: "",
     slug: "",
     description: "",
@@ -157,6 +162,8 @@ const Pods = () => {
     setError("");
     setFormData({
       UserId: "",
+      password: "",
+      serial: "",
       deviceId: "",
       productId: "prod00qd",
       title: "",
@@ -226,6 +233,8 @@ const Pods = () => {
     setEditFormData({
       UserId: product.UserId || "",
       deviceId: product.deviceId,
+      password: product.password,
+      serial: product.serial,
       title: product.title,
       slug: product.slug,
       description: product.description,
@@ -507,7 +516,7 @@ const Pods = () => {
                         {pod.images && pod.images.length > 0 && (
                           <img
                             key={pod.images[0]._id}
-                            src={`http://localhost:4000${pod.images[0].url}`}
+                            src={`https://privily.co${pod.images[0].url}`}
                             alt=""
                             style={{ width: "50px", height: "50px" }}
                           />
@@ -638,7 +647,7 @@ const Pods = () => {
             <Stack spacing={2}>
               <Stack direction={"row"} gap={2}>
                 <TextField
-                  style={{ width: "50%" }}
+                  style={{ width: "33%" }}
                   required
                   fullWidth
                   label="User ID"
@@ -649,17 +658,34 @@ const Pods = () => {
 
                 <TextField
                   required
-                  style={{ width: "50%" }}
+                  style={{ width: "33%" }}
                   label="Device ID"
                   name="deviceId"
                   value={formData.deviceId}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  style={{ width: "33%" }}
+                  required
+                  fullWidth
+                  label="Device Serial"
+                  name="serial"
+                  value={formData.serial}
                   onChange={handleInputChange}
                 />
               </Stack>
               <Stack direction={"row"} gap={2}>
                 <TextField
                   required
-                  fullWidth
+                  style={{ width: "33%" }}
+                  label="Device Password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  required
+                  style={{ width: "33%" }}
                   label="Title"
                   name="title"
                   value={formData.title}
@@ -667,7 +693,7 @@ const Pods = () => {
                 />
                 <TextField
                   required
-                  fullWidth
+                  style={{ width: "33%" }}
                   label="Description"
                   name="description"
                   value={formData.description}
@@ -862,7 +888,7 @@ const Pods = () => {
             <Stack spacing={2}>
               <Stack direction={"row"} gap={2}>
                 <TextField
-                  style={{ width: "50%" }}
+                  style={{ width: "33%" }}
                   required
                   fullWidth
                   label="User ID"
@@ -871,7 +897,7 @@ const Pods = () => {
                   onChange={handleEditInputChange}
                 />
                 <TextField
-                  style={{ width: "50%" }}
+                  style={{ width: "33%" }}
                   required
                   fullWidth
                   label="Device ID"
@@ -879,11 +905,27 @@ const Pods = () => {
                   value={editFormData.deviceId}
                   onChange={handleEditInputChange}
                 />
+                <TextField
+                  style={{ width: "33%" }}
+                  required
+                  label="Device Serial"
+                  name="serial"
+                  value={editFormData.serial}
+                  onChange={handleEditInputChange}
+                />
               </Stack>
               <Stack direction={"row"} gap={2}>
                 <TextField
                   required
-                  fullWidth
+                  style={{ width: "33%" }}
+                  label="Device Password"
+                  name="password"
+                  value={editFormData.password}
+                  onChange={handleEditInputChange}
+                />
+                <TextField
+                  required
+                  style={{ width: "33%" }}
                   label="Title"
                   name="title"
                   value={editFormData.title}
@@ -891,7 +933,7 @@ const Pods = () => {
                 />
                 <TextField
                   required
-                  fullWidth
+                  style={{ width: "33%" }}
                   label="Description"
                   name="description"
                   value={editFormData.description}

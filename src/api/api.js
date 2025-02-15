@@ -8,7 +8,7 @@ const getToken = () => {
 
 // Create an Axios instance
 const apiClient = axios.create({
-  baseURL: "http://localhost:4000/api", // Base URL for your API
+  baseURL: "https://privily.co/api", // Base URL for your API
   
 });
 
@@ -309,12 +309,30 @@ export const fetchRate = async () => {
     throw error;
   }
 };
+export const fetchDiscount = async () => {
+  try {
+    const response = await apiClient.get("/transactions/getdiscount");
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 // Manage rate (create or update)
 export const manageRate = async (rate) => {
   try {
     const response = await apiClient.post("/transactions/ManageRates", {
       rate,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+export const manageDiscount = async (discount) => {
+  try {
+    const response = await apiClient.post("/transactions/ManageDiscount", {
+      discount,
     });
     return response.data;
   } catch (error) {

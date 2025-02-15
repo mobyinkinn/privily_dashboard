@@ -8,7 +8,7 @@
 
 //   const login = async (email, password) => {
 //     try {
-//       const response = await fetch("http://localhost:4000/api/user/login", {
+//       const response = await fetch("https://privily.co/api/user/login", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -56,7 +56,7 @@
 
 //   const login = async (email, password) => {
 //     try {
-//       const response = await fetch("http://localhost:4000/api/user/login", {
+//       const response = await fetch("https://privily.co/api/user/login", {
 //         method: "POST",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -104,7 +104,7 @@
 
 //   const login = async (email, password) => {
 //     try {
-//       const response = await axios.post("http://localhost:4000/api/user/login", {
+//       const response = await axios.post("https://privily.co/api/user/login", {
 //         email,
 //         password,
 //       });
@@ -157,7 +157,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/user/login",
+        "https://privily.co/api/user/login",
         {
           email,
           password,
@@ -185,7 +185,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       console.log(auth)
       const response = await axios.post(
-        "http://localhost:4000/api/user/verify-page",
+        "https://privily.co/api/user/verify-page",
         { id: auth?.user?._id || auth?._id, auth_page },
         {
           headers: {

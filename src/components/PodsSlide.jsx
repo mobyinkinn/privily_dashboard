@@ -39,7 +39,7 @@ const PodsSlide = ({ pods }) => {
 //     const getCastingCallsdetails = async () => {
 //       try {
 //         const response = await axios.get(
-//           "http://localhost:4000/api/product",
+//           "https://privily.co/api/product",
 //           {
 //             headers: {
 //               "Content-Type": "application/x-www-form-urlencoded",
@@ -104,7 +104,7 @@ const PodsSlide = ({ pods }) => {
             >
               {d.images && d.images?.length > 0 && (
                 <img
-                  src={`http://localhost:4000${d.images[0].url}`}
+                  src={`https://privily.co${d.images[0].url}`}
                   className="Images-correct"
                   style={{
                     width: "90%",
