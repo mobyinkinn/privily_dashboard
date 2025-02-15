@@ -1126,6 +1126,7 @@ const Features = () => {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     const effect = async () => {
