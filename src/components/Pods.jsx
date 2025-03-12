@@ -90,6 +90,7 @@ const Pods = () => {
     availability: "",
     cancellation_policy: "",
     safety_and_property: "",
+    email:""
   });
   const [editFormData, setEditFormData] = useState({
     UserId: "",
@@ -112,6 +113,7 @@ const Pods = () => {
     isAvailable: true,
     images: [],
     tags: "",
+    email: "",
   });
   const { verifyUser } = useAuth();
 
@@ -183,6 +185,7 @@ const Pods = () => {
       availability: "",
       cancellation_policy: "",
       safety_and_property: "",
+      email: "",
     });
     setSelectedFeatures([]);
     setSelectedLocation("");
@@ -251,6 +254,7 @@ const Pods = () => {
       isAvailable: product.isAvailable,
       images: product.images.map((image) => image.url),
       tags: product.tags,
+      email: product.email,
     });
     setEditModalOpen(true);
   };
@@ -821,15 +825,26 @@ const Pods = () => {
                   onChange={handleInputChange}
                 />
               </Stack>
-              <TextField
-                style={{ width: "50%" }}
-                required
-                fullWidth
-                label="Safety and Property"
-                name="safety_and_property"
-                value={formData.safety_and_property}
-                onChange={handleInputChange}
-              />
+              <Stack direction={"row"} gap={2}>
+                <TextField
+                  style={{ width: "50%" }}
+                  required
+                  fullWidth
+                  label="Safety and Property"
+                  name="safety_and_property"
+                  value={formData.safety_and_property}
+                  onChange={handleInputChange}
+                />
+                <TextField
+                  style={{ width: "50%" }}
+                  required
+                  fullWidth
+                  label="Host email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                />
+              </Stack>
               <Box
                 sx={{ mt: 2 }}
                 display={"flex"}
@@ -1066,15 +1081,26 @@ const Pods = () => {
                   onChange={handleEditInputChange}
                 />
               </Stack>
-              <TextField
-                style={{ width: "50%" }}
-                required
-                fullWidth
-                label="Safety and Property"
-                name="safety_and_property"
-                value={editFormData.safety_and_property}
-                onChange={handleEditInputChange}
-              />
+              <Stack direction={"row"} gap={2}>
+                <TextField
+                  style={{ width: "50%" }}
+                  required
+                  fullWidth
+                  label="Safety and Property"
+                  name="safety_and_property"
+                  value={editFormData.safety_and_property}
+                  onChange={handleEditInputChange}
+                />
+                <TextField
+                  style={{ width: "50%" }}
+                  required
+                  fullWidth
+                  label="Host Email"
+                  name="email"
+                  value={editFormData.email}
+                  onChange={handleEditInputChange}
+                />
+              </Stack>
             </Stack>
             <Box
               sx={{ mt: 2 }}
